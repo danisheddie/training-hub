@@ -264,6 +264,8 @@ svg{display:block;}
 .day-rows{display:flex;flex-direction:column;gap:3px;margin-top:4px;}
 .day-row{display:flex;align-items:flex-start;gap:10px;padding:7px 10px;border-radius:var(--rs);transition:background .1s;}
 .day-row:hover{background:rgba(255,255,255,.025);}
+.day-row.is-rest{opacity:.55;}
+.day-row.is-rest:hover{opacity:1;}
 .day-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);font-weight:600;width:28px;flex-shrink:0;padding-top:2px;}
 .day-sessions{display:flex;flex-wrap:wrap;gap:5px;flex:1;}
 .sess-chip{font-size:12px;padding:3px 9px;border-radius:4px;display:inline-flex;align-items:center;gap:5px;line-height:1.4;}
@@ -1145,14 +1147,16 @@ function renderTabToday(r){
 
   // Today's session card
   let todayHtml='';
+  const editBtn=(day)=>`<button onclick="openEdit('${r.id}',${wObj.weekNum},'${day}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.05em;display:inline-flex;align-items:center;gap:4px;transition:color .12s,border-color .12s" onmouseover="this.style.color='var(--white)';this.style.borderColor='var(--border)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='var(--border2)'">${IC.pencil} Edit</button>`;
+
   if(todaySessions){
     const parts=todaySessions.split('+').map(p=>p.trim());
     const isDone=logData[todayKey]?.done;
     const noteVal=(logData[todayKey]?.note||'').replace(/"/g,'&quot;');
     todayHtml=`
       <div class="today-card" style="border-color:var(--border2);grid-column:1/-1">
-        <h4>Today — ${todayKey}</h4>
-        ${parts.map((p,i)=>{
+        <h4 style="display:flex;justify-content:space-between;align-items:center">Today — ${todayKey} ${editBtn(todayKey)}</h4>
+        ${parts.map(p=>{
           const cls=sessColor(p);
           return`<div class="today-session-row today-done">
             <input type="checkbox" ${isDone?'checked':''} onchange="logSession('${r.id}','${wObj.weekNum}','${todayKey}','done',this.checked,'${logKey}')">
@@ -1168,26 +1172,38 @@ function renderTabToday(r){
         </div>
       </div>`;
   } else {
-    todayHtml=`<div class="today-card" style="grid-column:1/-1"><h4>Today — ${todayKey}</h4><div style="color:var(--t3);font-size:13px;font-style:italic">Rest day. Recover well.</div></div>`;
+    todayHtml=`<div class="today-card" style="grid-column:1/-1">
+      <h4 style="display:flex;justify-content:space-between;align-items:center">Today — ${todayKey} ${editBtn(todayKey)}</h4>
+      <div style="color:var(--t3);font-size:13px;font-style:italic">Rest day — tap Edit to add a session.</div>
+    </div>`;
   }
 
   // Remaining week sessions
   const restDays=DAY_ORDER.filter(d=>d!==todayKey&&wObj.sessions[d]&&wObj.sessions[d]!=='—');
-  const restHtml=restDays.length?`
+  // Show all remaining days (including rest days) so nothing is hidden
+  const allOtherDays=ALL_DAYS.filter(d=>d!==todayKey);
+  const restHtml=`
     <div class="today-card">
-      <h4>Rest of Week ${wObj.weekNum}</h4>
-      ${restDays.map(d=>{
-        const cls=sessColor(wObj.sessions[d]);
+      <h4>Week ${wObj.weekNum} — All Days</h4>
+      ${allOtherDays.map(d=>{
+        const sess=wObj.sessions[d];
+        const isRest=!sess||sess==='—';
+        const cls=isRest?'rest':sessColor(sess);
         const done=logData[d]?.done;
-        return`<div class="today-session-row today-done">
-          <input type="checkbox" ${done?'checked':''} onchange="logSession('${r.id}','${wObj.weekNum}','${d}','done',this.checked,'${logKey}')">
-          <div class="today-session-text">
-            <div class="today-session-name" style="${done?'text-decoration:line-through;color:var(--t3)':''}">${d} — ${wObj.sessions[d]}</div>
-            <div class="today-session-type c-${cls}">${cls.charAt(0).toUpperCase()+cls.slice(1)}</div>
+        return`<div class="today-session-row today-done" style="${isRest?'opacity:.55':''}">
+          ${isRest
+            ? `<span style="width:15px;height:15px;flex-shrink:0"></span>`
+            : `<input type="checkbox" ${done?'checked':''} onchange="logSession('${r.id}','${wObj.weekNum}','${d}','done',this.checked,'${logKey}')">`
+          }
+          <div class="today-session-text" style="flex:1">
+            <div class="today-session-name" style="${done&&!isRest?'text-decoration:line-through;color:var(--t3)':''}">
+              <strong style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-right:6px">${d}</strong>${isRest?'Rest':sess}
+            </div>
           </div>
+          <button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.05em;flex-shrink:0">${isRest?IC.plus+' Add':IC.pencil+' Edit'}</button>
         </div>`;
       }).join('')}
-    </div>`:''
+    </div>`
 
   // Week meta card
   const metaHtml=`
@@ -1241,9 +1257,6 @@ const ALL_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
 function renderWeekCards(weeks,raceType,raceId,curWn){
   if(!weeks.length) return '<div style="padding:16px 18px;color:var(--t3);font-size:13px">No weeks in this phase.</div>';
-  // Derive displayed days from what's actually in the data — no hardcoded list
-  const usedDays=new Set(weeks.flatMap(w=>Object.keys(w.sessions||{})));
-  const DAYS=ALL_DAYS.filter(d=>usedDays.has(d));
   return weeks.map(w=>{
     const isCur=w.weekNum===curWn;
     const tags=[
@@ -1251,29 +1264,36 @@ function renderWeekCards(weeks,raceType,raceId,curWn){
       w.isRecovery?'<span class="wk-tag recovery">Recovery</span>':'',
       w.brick?'<span class="wk-tag brick">Brick</span>':'',
     ].filter(Boolean).join('');
-    const dayRows=DAYS.map(day=>{
+    // Always show all 7 days — rest days show a "Rest" chip so they are visible and editable
+    const dayRows=ALL_DAYS.map(day=>{
       const v=w.sessions[day];
-      if(!v||v==='—') return'';
-      const parts=v.split('+').map(p=>p.trim());
-      const chips=parts.map(p=>{
-        const cls=sessColor(p);
-        return`<span class="sess-chip c-${cls}">${IC[cls==='brick'?'tri':cls==='gym'?'hyrox':cls==='rest'?'flag':cls]||IC.flag} ${p}</span>`;
-      }).join('');
-      return`<div class="day-row">
+      const isRest=!v||v==='—';
+      let chips;
+      if(isRest){
+        chips=`<span class="sess-chip c-rest">Rest</span>`;
+      } else {
+        const parts=v.split('+').map(p=>p.trim());
+        chips=parts.map(p=>{
+          const cls=sessColor(p);
+          return`<span class="sess-chip c-${cls}">${IC[cls==='brick'?'tri':cls==='gym'?'hyrox':cls==='rest'?'flag':cls]||IC.flag} ${p}</span>`;
+        }).join('');
+      }
+      const btnLabel=isRest?`${IC.plus} Add`:`${IC.pencil} Edit`;
+      return`<div class="day-row${isRest?' is-rest':''}">
         <span class="day-label">${day}</span>
         <div class="day-sessions">${chips}</div>
-        <button class="day-edit-btn" onclick="openEdit('${raceId}',${w.weekNum},'${day}',event)">${IC.pencil} Edit</button>
+        <button class="day-edit-btn" onclick="openEdit('${raceId}',${w.weekNum},'${day}',event)">${btnLabel}</button>
       </div>`;
-    }).filter(Boolean).join('');
+    }).join('');
     return`<div class="week-card${isCur?' current':''}${w.isRecovery?' recovery':''}">
-      <div class="week-card-head" onclick="toggleWeek(this,${isCur})">
+      <div class="week-card-head" onclick="toggleWeek(this)">
         <span class="wk-num">W${w.weekNum}</span>
         <span class="wk-dates">${w.dates}</span>
         <div class="wk-tags">${tags}</div>
         <span class="wk-chevron${isCur?' open':''}">${IC.chevdown}</span>
       </div>
       <div class="wk-body${isCur?' open':''}">
-        <div class="day-rows">${dayRows||'<div style="color:var(--t3);font-size:12px;padding:6px 0">No sessions this week.</div>'}</div>
+        <div class="day-rows">${dayRows}</div>
         ${w.note?`<div style="font-size:11px;color:var(--t3);margin-top:6px;padding-left:38px">${w.note}</div>`:''}
       </div>
     </div>`;
