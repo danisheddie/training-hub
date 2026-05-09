@@ -507,6 +507,27 @@ svg{display:block;}
 .profile-add-row input{flex:1;background:var(--s2);border:1px solid var(--border2);border-radius:5px;color:var(--white);font-family:inherit;font-size:12px;padding:6px 9px;outline:none;}
 .profile-add-row input:focus{border-color:var(--red);}
 
+/* ─── WEEK PROGRESS BAR (Today tab) ─────────────────────────── */
+.week-progress-bar{background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.week-progress-track{flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden;}
+.week-progress-fill{height:100%;border-radius:3px;background:var(--run);transition:width .4s ease;}
+.week-progress-label{font-size:11px;color:var(--t2);white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.04em;}
+
+/* ─── TAPER BANNER ───────────────────────────────────────────── */
+.taper-banner{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:var(--rs);padding:6px 12px;font-size:12px;color:#c4b5fd;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;margin-top:8px;}
+
+/* ─── PHASE JUMP BAR (Plan tab) ──────────────────────────────── */
+.phase-jump-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.phase-jump-btn{background:var(--s2);border:1px solid var(--border2);border-radius:20px;color:var(--t2);cursor:pointer;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;padding:5px 14px;transition:all .15s;text-transform:uppercase;}
+.phase-jump-btn:hover,.phase-jump-btn.active{background:var(--red-dim);border-color:var(--red-border);color:var(--red2);}
+
+/* ─── MOBILE EDGE HINT ───────────────────────────────────────── */
+.edge-pull-hint{display:none;position:fixed;left:0;top:50%;transform:translateY(-50%);width:4px;height:48px;background:var(--border2);border-radius:0 4px 4px 0;z-index:54;transition:background .2s;}
+
+/* ─── NOTES PULSE ANIMATION ──────────────────────────────────── */
+@keyframes notesPulse{0%{border-color:var(--border2)}50%{border-color:var(--red);box-shadow:0 0 0 3px rgba(229,57,53,.15)}100%{border-color:var(--border2)}}
+.notes-pulse{animation:notesPulse 1s ease 0.2s 2;}
+
 /* ─── THEME SWITCHER ─────────────────────────────────────────── */
 .theme-bar{padding:10px 12px;border-top:1px solid var(--border);}
 .theme-bar-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;font-weight:600;}
@@ -573,6 +594,7 @@ svg{display:block;}
 @media(max-width:768px){
   /* show top bar, hide nothing else yet */
   .mob-bar{display:flex;}
+  .edge-pull-hint{display:block;}
   #main{margin-left:0;padding-top:52px;}
   #sb-close-btn{display:flex !important;}
 
@@ -687,6 +709,7 @@ svg{display:block;}
 <body>
 
 <!-- MOBILE TOP BAR -->
+<div class="edge-pull-hint" id="edge-pull-hint"></div>
 <div class="mob-bar" id="mob-bar">
   <button class="mob-icon-btn" onclick="toggleSidebar()" aria-label="Menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -777,7 +800,7 @@ svg{display:block;}
       <div class="pp-label" id="pp-label"></div>
       <div class="race-tabs" style="margin-top:14px">
         <button class="r-tab active" data-tab="today" onclick="switchTab('today',this)">Today</button>
-        <button class="r-tab" data-tab="plan" onclick="switchTab('plan',this)">Plan</button>
+        <button class="r-tab" data-tab="plan" onclick="switchTab('plan',this)">Schedule</button>
         <button class="r-tab" data-tab="log" onclick="switchTab('log',this)">Log</button>
         <button class="r-tab" data-tab="gear" onclick="switchTab('gear',this)">Gear</button>
         <button class="r-tab" data-tab="overview" onclick="switchTab('overview',this)">Overview</button>
@@ -1246,14 +1269,23 @@ function startCountdown(raceId,dateStr){
     const el=document.getElementById('race-countdown');if(!el)return;
     if(diff<=0){el.innerHTML='<span style="font-family:Barlow Condensed,sans-serif;font-weight:900;font-size:28px;color:var(--red2)">RACE DAY</span>';return;}
     const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
-    el.innerHTML=`
-      <div class="cd-block"><span class="cd-val">${String(d).padStart(3,'0')}</span><div class="cd-lbl">Days</div></div>
+    if(d>14){
+      el.innerHTML=`<div class="cd-block"><span class="cd-val">${String(d).padStart(3,'0')}</span><div class="cd-lbl">Days</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-val">${String(h).padStart(2,'0')}</span><div class="cd-lbl">Hrs</div></div>`;
+    } else if(d>=1){
+      el.innerHTML=`<div class="cd-block"><span class="cd-val">${String(d).padStart(2,'0')}</span><div class="cd-lbl">Days</div></div>
       <span class="cd-sep">:</span>
       <div class="cd-block"><span class="cd-val">${String(h).padStart(2,'0')}</span><div class="cd-lbl">Hrs</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-val">${String(m).padStart(2,'0')}</span><div class="cd-lbl">Min</div></div>`;
+    } else {
+      el.innerHTML=`<div class="cd-block"><span class="cd-val">${String(h).padStart(2,'0')}</span><div class="cd-lbl">Hrs</div></div>
       <span class="cd-sep">:</span>
       <div class="cd-block"><span class="cd-val">${String(m).padStart(2,'0')}</span><div class="cd-lbl">Min</div></div>
       <span class="cd-sep">:</span>
       <div class="cd-block"><span class="cd-val">${String(s).padStart(2,'0')}</span><div class="cd-lbl">Sec</div></div>`;
+    }
   }
   tick();_timers[raceId]=setInterval(tick,1000);
 }
@@ -1342,28 +1374,45 @@ function renderTabToday(r){
       }).join('')}
     </div>`
 
+  // Weekly session progress
+  const allDays=ALL_DAYS.filter(d=>wObj.sessions[d]);
+  const doneDays=allDays.filter(d=>getStatus(logData[d])==='done').length;
+  const skipDays=allDays.filter(d=>getStatus(logData[d])==='skipped').length;
+  const totalDays=allDays.length;
+  const pct=totalDays>0?Math.round(doneDays/totalDays*100):0;
+  const weekProgressHtml=totalDays>0?`<div class="week-progress-bar">
+    <div class="week-progress-track"><div class="week-progress-fill" style="width:${pct}%"></div></div>
+    <span class="week-progress-label">${doneDays}/${totalDays} sessions done${skipDays>0?` · ${skipDays} skipped`:''}</span>
+  </div>`:'';
+
   // Week meta card
+  const isTaper=ph&&ph.id==='taper';
   const metaHtml=`
     <div class="today-card">
       <h4>Week ${wObj.weekNum} Context</h4>
       <div style="font-size:13px;color:var(--t2);margin-bottom:6px">${wObj.dates}</div>
       ${ph?`<div style="font-size:12px;color:var(--t3)">${ph.name} phase</div>`:''}
       ${wObj.isRecovery?`<div style="margin-top:8px;font-size:12px;background:rgba(96,165,250,.1);color:var(--z1);border:1px solid rgba(96,165,250,.2);border-radius:4px;padding:4px 10px;display:inline-block">Recovery week — pull back 30%</div>`:''}
+      ${isTaper&&!wObj.isRecovery?`<div class="taper-banner">⚡ Taper week — trust the process, protect the legs</div>`:''}
       ${wObj.note?`<div style="margin-top:8px;font-size:12px;color:var(--t2)">${wObj.note}</div>`:''}
     </div>`;
 
-  document.getElementById('tab-today').innerHTML=`<div class="today-grid">${todayHtml}${restHtml}${metaHtml}</div>`;
+  document.getElementById('tab-today').innerHTML=weekProgressHtml+`<div class="today-grid">${todayHtml}${restHtml}${metaHtml}</div>`;
 }
 
 // ─── PLAN TAB ────────────────────────────────────────────────────
 function renderTabPlan(r){
   const curWn=getCurrentWeekNum(r);
   const phaseNums={base:'ph1',build:'ph2',peak:'ph3',taper:'ph4'};
-  document.getElementById('tab-plan').innerHTML=`<div class="plan-phases">${(r.phases||[]).map((ph,pi)=>{
+  const curPhase=getCurrentPhase(r);
+  const jumpBar=`<div class="phase-jump-bar">${(r.phases||[]).map(ph=>`
+    <button class="phase-jump-btn${curPhase&&curPhase.id===ph.id?' active':''}" onclick="jumpToPhase('pjump_${ph.id}')">${ph.name}</button>`).join('')}
+  </div>`;
+  document.getElementById('tab-plan').innerHTML=jumpBar+`<div class="plan-phases">${(r.phases||[]).map((ph,pi)=>{
     const pnum=pi+1;
     const cls=phaseNums[ph.id]||`ph${pnum}`;
     const hasCurrentWk=(ph.weeks||[]).some(w=>w.weekNum===curWn);
-    return`<div class="phase-block ${cls}">
+    return`<div class="phase-block ${cls}" id="pjump_${ph.id}">
       <div class="phase-toggle-row" onclick="togglePhase(this,${hasCurrentWk})">
         <div class="ph-num">0${pnum}</div>
         <div class="ph-info">
@@ -1388,6 +1437,14 @@ function togglePhase(header,startOpen){
   const body=header.nextElementSibling;
   body.classList.toggle('open');
   header.querySelector('.ph-chevron').classList.toggle('open');
+}
+function jumpToPhase(id){
+  const el=document.getElementById(id);if(!el)return;
+  // Open the phase if closed
+  const body=el.querySelector('.ph-body');
+  const chev=el.querySelector('.ph-chevron');
+  if(body&&!body.classList.contains('open')){body.classList.add('open');if(chev)chev.classList.add('open');}
+  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 const ALL_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -1558,6 +1615,16 @@ function setStatus(rId,wNum,day,newStatus,logKey){
   if(r) renderRace(rId);
   _refreshLogProgressBar(rId,wNum,logKey);
   renderSidebar();
+  // Pulse the Notes/RPE field when marking done to prompt logging
+  if(next==='done'){
+    const todayKey=getTodayDayKey();
+    if(day===todayKey){
+      setTimeout(()=>{
+        const inputs=document.querySelectorAll('#tab-today input[type=text]');
+        inputs.forEach(inp=>{inp.classList.remove('notes-pulse');void inp.offsetWidth;inp.classList.add('notes-pulse');});
+      },300);
+    }
+  }
 }
 
 // ─── CUSTOM WORKOUTS ─────────────────────────────────────────────
@@ -2098,12 +2165,13 @@ function toggleSidebar(){
   const sb=document.getElementById('sidebar');
   const bd=document.getElementById('sb-backdrop');
   const isOpen=sb.classList.contains('mob-open');
-  if(isOpen){closeSidebar();}else{sb.classList.add('mob-open');bd.classList.add('open');document.body.style.overflow='hidden';}
+  if(isOpen){closeSidebar();}else{sb.classList.add('mob-open');bd.classList.add('open');document.body.style.overflow='hidden';const h=document.getElementById('edge-pull-hint');if(h)h.style.display='none';}
 }
 function closeSidebar(){
   document.getElementById('sidebar').classList.remove('mob-open');
   document.getElementById('sb-backdrop').classList.remove('open');
   document.body.style.overflow='';
+  const h=document.getElementById('edge-pull-hint');if(h)h.style.display='';
 }
 function setMobTitle(t){const el=document.getElementById('mob-title');if(el)el.textContent=t;}
 
