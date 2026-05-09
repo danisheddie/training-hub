@@ -469,6 +469,32 @@ svg{display:block;}
 .btn-edit-save{background:var(--red);border:none;color:#fff;border-radius:var(--rs);padding:8px 20px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;transition:background .15s;}
 .btn-edit-save:hover{background:var(--red2);}
 
+/* ─── INLINE EDIT PATTERN ────────────────────────────────────── */
+.ie-wrap{display:flex;align-items:center;gap:5px;}
+.ie-pencil{background:transparent;border:none;color:var(--t3);cursor:pointer;padding:3px;display:inline-flex;align-items:center;border-radius:3px;transition:color .15s,background .15s;flex-shrink:0;}
+.ie-pencil:hover{color:var(--white);background:rgba(255,255,255,.06);}
+.ie-pencil svg{width:13px;height:13px;}
+.ie-input{background:transparent;border:none;border-bottom:2px solid var(--red);color:inherit;font:inherit;outline:none;padding:2px 0;min-width:80px;width:100%;}
+.ie-save{background:var(--run);border:none;color:#fff;border-radius:4px;padding:3px 9px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:.06em;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.ie-save:hover{filter:brightness(1.1);}
+.ie-cancel{background:transparent;border:1px solid var(--border2);color:var(--t2);border-radius:4px;padding:3px 7px;font-size:12px;cursor:pointer;flex-shrink:0;}
+.ie-cancel:hover{border-color:var(--t1);}
+/* Sidebar user edit */
+.sb-logo-sub{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);letter-spacing:.04em;}
+.sb-user-text{flex:1;}
+/* Profile edit in Overview */
+.profile-edit-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.profile-edit-row:last-child{border-bottom:none;}
+.profile-edit-key{font-size:11px;color:var(--t3);flex:0 0 auto;max-width:45%;}
+.profile-edit-val{font-size:13px;color:var(--t1);text-align:right;flex:1;}
+.profile-edit-val input{background:transparent;border:none;border-bottom:1px solid var(--red);color:var(--white);font:inherit;font-size:13px;text-align:right;outline:none;width:100%;}
+.btn-add-profile-row{background:transparent;border:1px dashed var(--border2);color:var(--t2);border-radius:5px;padding:6px 12px;font-size:12px;cursor:pointer;width:100%;text-align:center;transition:all .15s;font-family:inherit;margin-top:8px;}
+.btn-add-profile-row:hover{border-color:var(--t1);color:var(--white);}
+.profile-add-row{display:none;gap:6px;margin-top:6px;}
+.profile-add-row.visible{display:flex;}
+.profile-add-row input{flex:1;background:var(--s2);border:1px solid var(--border2);border-radius:5px;color:var(--white);font-family:inherit;font-size:12px;padding:6px 9px;outline:none;}
+.profile-add-row input:focus{border-color:var(--red);}
+
 /* ─── THEME SWITCHER ─────────────────────────────────────────── */
 .theme-bar{padding:10px 12px;border-top:1px solid var(--border);}
 .theme-bar-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;font-weight:600;}
@@ -664,9 +690,9 @@ svg{display:block;}
 <!-- SIDEBAR -->
 <aside id="sidebar">
   <div class="sb-logo" style="display:flex;align-items:center;justify-content:space-between;">
-    <div>
+    <div style="flex:1;min-width:0">
       <div class="sb-logo-mark">Training <em>Hub</em></div>
-      <div class="sb-logo-sub">Danish Eddie · 2026</div>
+      <div class="sb-logo-sub" id="sb-user-display"></div>
     </div>
     <button class="mob-icon-btn" onclick="closeSidebar()" style="display:none" id="sb-close-btn" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -791,8 +817,8 @@ svg{display:block;}
     </div>
     <div class="edit-body" id="edit-body"></div>
     <div class="edit-foot">
-      <button class="btn-edit-cancel" onclick="closeEdit()">Cancel</button>
-      <button class="btn-edit-save" onclick="saveEdit()">Save</button>
+      <button class="btn-edit-cancel" onclick="closeEdit();_profileEditRaceId=null;">Cancel</button>
+      <button class="btn-edit-save" onclick="_profileEditRaceId?saveProfileEdit():saveEdit()">Save</button>
     </div>
   </div>
 </div>
@@ -1050,6 +1076,7 @@ function detectConflicts(races){
 
 // ─── SIDEBAR ─────────────────────────────────────────────────────
 function renderSidebar(){
+  renderSidebarUser();
   const conflicts=detectConflicts(DATA.races||[]);
   const conflictIds=new Set(conflicts.flatMap(c=>[c.a,c.b]));
   document.getElementById('sb-race-list').innerHTML=(DATA.races||[]).map(r=>{
@@ -1158,7 +1185,10 @@ function renderRace(raceId){
   const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
   // header
   document.getElementById('rh-type').innerHTML=`${IC[typeIcon(r.type)]||IC.flag} ${typeLabel(r.type)}`;
-  document.getElementById('rh-name').textContent=r.name;
+  document.getElementById('rh-name').innerHTML=`<span class="ie-wrap" style="flex-wrap:nowrap">
+    <span style="flex:1">${r.name}</span>
+    <button class="ie-pencil" onclick="editRaceName('${r.id}')" title="Rename race">${IC.pencil}</button>
+  </span>`;
   document.getElementById('rh-date').innerHTML=`${IC.calendar} ${fmtDate(r.date)}`;
   document.getElementById('rh-goal').textContent=r.goal;
   // splits
@@ -1686,7 +1716,10 @@ function renderTabOverview(r){
     <div class="ov-two-col">
       <div><div class="ov-section-title">Training Zones</div>${zonesHtml}</div>
       <div>
-        <div class="ov-section-title">Athlete Profile</div>
+        <div class="ov-section-title" style="display:flex;justify-content:space-between;align-items:center">
+          Athlete Profile
+          <button class="ie-pencil" onclick="openProfileEdit('${r.id}')" title="Edit profile" style="padding:3px 6px;border-radius:4px;border:1px solid var(--border2)">${IC.pencil} <span style="font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em">Edit</span></button>
+        </div>
         ${profHtml}
         <button class="btn-delete" onclick="deleteRace('${r.id}')">${IC.trash} Remove race</button>
       </div>
@@ -1736,7 +1769,7 @@ function openEdit(raceId,weekNum,targetDay,evt){
   setTimeout(()=>{const f=document.getElementById('ef_day')||document.getElementById('ef_Mon');if(f)f.focus();},80);
 }
 
-function closeEdit(){document.getElementById('edit-overlay').classList.remove('open');_editTarget=null;}
+function closeEdit(){document.getElementById('edit-overlay').classList.remove('open');_editTarget=null;_profileEditRaceId=null;}
 
 function saveEdit(){
   if(!_editTarget)return;
@@ -2025,6 +2058,137 @@ document.addEventListener('click',e=>{
     x0=null;
   },{passive:true});
 })();
+
+// ─── USER PROFILE (sidebar name) ────────────────────────────────
+function loadUserProfile(){
+  try{return JSON.parse(localStorage.getItem('thubUser')||'null');}catch(e){return null;}
+}
+function saveUserProfile(p){localStorage.setItem('thubUser',JSON.stringify(p));}
+
+function renderSidebarUser(){
+  const p=loadUserProfile()||{name:'Danish Eddie',year:'2026'};
+  const el=document.getElementById('sb-user-display');
+  if(!el)return;
+  el.innerHTML=`<span class="sb-user-text">${p.name} · ${p.year}</span>
+    <button class="ie-pencil" onclick="editSidebarUser()" title="Edit name">${IC.pencil}</button>`;
+}
+
+function editSidebarUser(){
+  const p=loadUserProfile()||{name:'Danish Eddie',year:'2026'};
+  const el=document.getElementById('sb-user-display');
+  if(!el)return;
+  el.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:5px;width:100%">
+      <input class="ie-input" id="ue-name" type="text" value="${p.name.replace(/"/g,'&quot;')}" placeholder="Your name" style="font-size:12px">
+      <input class="ie-input" id="ue-year" type="text" value="${p.year}" placeholder="Year" style="font-size:11px;width:60px">
+      <div style="display:flex;gap:5px;margin-top:3px">
+        <button class="ie-save" onclick="saveSidebarUser()">Save</button>
+        <button class="ie-cancel" onclick="renderSidebarUser()">Cancel</button>
+      </div>
+    </div>`;
+  document.getElementById('ue-name').focus();
+  document.getElementById('ue-name').addEventListener('keydown',e=>{if(e.key==='Enter')saveSidebarUser();if(e.key==='Escape')renderSidebarUser();});
+}
+
+function saveSidebarUser(){
+  const name=(document.getElementById('ue-name')?.value||'').trim()||'Athlete';
+  const year=(document.getElementById('ue-year')?.value||'').trim()||new Date().getFullYear().toString();
+  saveUserProfile({name,year});
+  renderSidebarUser();
+}
+
+// ─── RACE NAME INLINE EDIT ───────────────────────────────────────
+function editRaceName(raceId){
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  const el=document.getElementById('rh-name');if(!el)return;
+  const cur=r.name.replace(/"/g,'&quot;');
+  el.outerHTML=`<div class="ie-wrap" id="rh-name-edit" style="flex-wrap:wrap;gap:8px">
+    <input class="ie-input" id="rn-input" type="text" value="${cur}" style="font-size:clamp(22px,3.5vw,38px);font-family:'Barlow Condensed',sans-serif;font-weight:900;letter-spacing:.03em;text-transform:uppercase;flex:1;min-width:180px">
+    <button class="ie-save" onclick="saveRaceName('${raceId}')">Save</button>
+    <button class="ie-cancel" onclick="showRace('${raceId}')">Cancel</button>
+  </div>`;
+  const inp=document.getElementById('rn-input');
+  if(inp){inp.focus();inp.select();
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveRaceName(raceId);if(e.key==='Escape')showRace(raceId);});
+  }
+}
+
+function saveRaceName(raceId){
+  const inp=document.getElementById('rn-input');
+  const name=(inp?.value||'').trim();
+  if(!name)return;
+  const r=DATA.races.find(x=>x.id===raceId);
+  if(r){r.name=name;save();}
+  showRace(raceId);
+  renderSidebar();
+  // Update mobile title
+  setMobTitle(name);
+}
+
+// ─── ATHLETE PROFILE EDIT ────────────────────────────────────────
+let _profileEditRaceId=null;
+
+function openProfileEdit(raceId){
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  _profileEditRaceId=raceId;
+  const entries=Object.entries(r.profile||{});
+  document.getElementById('edit-title').textContent='Edit Athlete Profile';
+  document.getElementById('edit-body').innerHTML=`
+    <div id="profile-edit-rows">
+      ${entries.map(([k,v],i)=>`
+        <div class="profile-edit-row" id="per_${i}">
+          <span class="profile-edit-key">${k}</span>
+          <span class="profile-edit-val"><input type="text" data-key="${k.replace(/"/g,'&quot;')}" value="${v.replace(/"/g,'&quot;')}" placeholder="Value"></span>
+          <button onclick="removeProfileRow(${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 4px;font-size:15px;flex-shrink:0" title="Remove">×</button>
+        </div>`).join('')}
+    </div>
+    <div class="profile-add-row" id="profile-add-row">
+      <input id="par-key" type="text" placeholder="Field name (e.g. Goal pace)">
+      <input id="par-val" type="text" placeholder="Value">
+      <button class="ie-save" onclick="confirmAddProfileRow()" style="white-space:nowrap">Add</button>
+      <button class="ie-cancel" onclick="document.getElementById('profile-add-row').classList.remove('visible')">×</button>
+    </div>
+    <button class="btn-add-profile-row" onclick="document.getElementById('profile-add-row').classList.add('visible');document.getElementById('par-key').focus()">+ Add field</button>`;
+  document.getElementById('edit-overlay').classList.add('open');
+}
+
+function removeProfileRow(idx){
+  const row=document.getElementById('per_'+idx);
+  if(row)row.remove();
+}
+
+function confirmAddProfileRow(){
+  const key=(document.getElementById('par-key')?.value||'').trim();
+  const val=(document.getElementById('par-val')?.value||'').trim();
+  if(!key)return;
+  const rows=document.getElementById('profile-edit-rows');
+  const i=rows.children.length;
+  const div=document.createElement('div');
+  div.className='profile-edit-row';div.id='per_'+i;
+  div.innerHTML=`<span class="profile-edit-key">${key}</span>
+    <span class="profile-edit-val"><input type="text" data-key="${key.replace(/"/g,'&quot;')}" value="${val.replace(/"/g,'&quot;')}" placeholder="Value"></span>
+    <button onclick="removeProfileRow(${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 4px;font-size:15px">×</button>`;
+  rows.appendChild(div);
+  document.getElementById('par-key').value='';
+  document.getElementById('par-val').value='';
+  document.getElementById('par-key').focus();
+  document.getElementById('profile-add-row').classList.remove('visible');
+}
+
+function saveProfileEdit(){
+  if(!_profileEditRaceId)return;
+  const r=DATA.races.find(x=>x.id===_profileEditRaceId);if(!r)return;
+  const newProfile={};
+  document.querySelectorAll('#profile-edit-rows .profile-edit-val input').forEach(inp=>{
+    const key=inp.getAttribute('data-key');
+    const val=inp.value.trim();
+    if(key&&val) newProfile[key]=val;
+  });
+  r.profile=newProfile;
+  save();
+  closeEdit();
+  showRace(_profileEditRaceId);
+}
 
 // ─── THEME ───────────────────────────────────────────────────────
 function setTheme(name,el){
