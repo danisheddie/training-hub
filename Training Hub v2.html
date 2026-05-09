@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Training Hub — Danish Eddie</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -34,8 +35,11 @@ svg{display:block;}
   width:var(--sidebar);background:var(--s1);border-right:1px solid var(--border);
   position:fixed;inset:0 auto 0 0;z-index:60;display:flex;flex-direction:column;overflow-y:auto;
 }
-.sb-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
-.sb-logo-mark{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:19px;letter-spacing:.1em;text-transform:uppercase;line-height:1;}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sb-logo-lockup{display:flex;align-items:center;gap:10px;}
+.sb-logo-icon{flex-shrink:0;}
+.sb-logo-mark{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;letter-spacing:.1em;text-transform:uppercase;line-height:1;}
+.sb-logo-mark span{font-weight:500;color:var(--t2);font-size:15px;letter-spacing:.12em;display:block;line-height:1.1;}
 .sb-logo-mark em{color:var(--red);font-style:normal;}
 .sb-logo-sub{font-size:11px;color:var(--t3);margin-top:3px;letter-spacing:.04em;}
 .sb-section{padding:16px 18px 6px;font-size:10px;letter-spacing:.18em;color:var(--t3);text-transform:uppercase;font-weight:600;}
@@ -725,9 +729,18 @@ svg{display:block;}
 <!-- SIDEBAR -->
 <aside id="sidebar">
   <div class="sb-logo" style="display:flex;align-items:center;justify-content:space-between;">
-    <div style="flex:1;min-width:0">
-      <div class="sb-logo-mark">Training <em>Hub</em></div>
-      <div class="sb-logo-sub" id="sb-user-display"></div>
+    <div class="sb-logo-lockup" style="flex:1;min-width:0">
+      <svg class="sb-logo-icon" width="34" height="34" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="12" stroke="#e53935" stroke-width="1.8"/>
+        <circle cx="14" cy="14" r="3" fill="#e53935"/>
+        <line x1="14" y1="11" x2="14" y2="2" stroke="#e53935" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="16.6" y1="15.5" x2="24.4" y2="20" stroke="#e53935" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="11.4" y1="15.5" x2="3.6" y2="20" stroke="#e53935" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="sb-logo-mark"><span>Training</span><em>Hub</em></div>
+        <div class="sb-logo-sub" id="sb-user-display"></div>
+      </div>
     </div>
     <button class="mob-icon-btn" onclick="closeSidebar()" style="display:none" id="sb-close-btn" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -759,8 +772,19 @@ svg{display:block;}
   <div id="view-hub">
     <div class="hub-header">
       <div>
-        <h1>Training Hub</h1>
-        <p id="hub-sub">Your races and training plans.</p>
+        <div style="display:flex;align-items:center;gap:12px">
+          <svg width="44" height="44" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="12" stroke="#e53935" stroke-width="1.8"/>
+            <circle cx="14" cy="14" r="3" fill="#e53935"/>
+            <line x1="14" y1="11" x2="14" y2="2" stroke="#e53935" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="16.6" y1="15.5" x2="24.4" y2="20" stroke="#e53935" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="11.4" y1="15.5" x2="3.6" y2="20" stroke="#e53935" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h1>Training Hub</h1>
+            <p id="hub-sub">Your races and training plans.</p>
+          </div>
+        </div>
       </div>
       <div class="hub-date-chip" id="hub-date"></div>
     </div>
