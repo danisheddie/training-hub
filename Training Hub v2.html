@@ -441,6 +441,18 @@ svg{display:block;}
 .opt-desc{font-size:11px;color:var(--t3);line-height:1.4;}
 .opt-other-wrap{margin-top:7px;display:none;}
 .opt-other-wrap.visible{display:block;}
+/* Consideration chips — step 6 */
+.chip-group{margin-bottom:18px;}
+.chip-group-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);font-weight:600;margin-bottom:8px;display:block;}
+.chip-grid{display:flex;flex-wrap:wrap;gap:7px;}
+.chip-toggle{background:var(--s2);border:1px solid var(--border2);border-radius:20px;color:var(--t1);cursor:pointer;font-size:12px;padding:6px 13px;transition:all .15s;font-family:'Inter',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.chip-toggle svg{width:12px;height:12px;opacity:0;transition:opacity .15s;}
+.chip-toggle:hover{border-color:var(--t2);color:var(--white);}
+.chip-toggle.selected{background:var(--red-dim);border-color:var(--red-border);color:var(--red2);}
+.chip-toggle.selected svg{opacity:1;}
+.considerations-textarea{width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:13px;padding:10px 12px;outline:none;resize:vertical;min-height:80px;transition:border-color .18s;margin-top:4px;}
+.considerations-textarea:focus{border-color:var(--red);}
+.considerations-hint{font-size:11px;color:var(--t3);margin-top:5px;line-height:1.5;}
 .wiz-footer{padding:14px 26px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .wiz-step-lbl{font-size:11px;color:var(--t3);}
 .wiz-footer-btns{display:flex;gap:8px;}
@@ -1831,7 +1843,76 @@ const WIZ_STEPS=[
       {value:'recovering',title:'Recovering',desc:'Need careful ramp-up'},
     ]},
   ]},
+  {id:'lifestyle',title:'Anything else to consider?',subtitle:'Help us personalise your plan to your life.',fields_fn:'getLifestyleFields'},
 ];
+
+// ─── STEP 6: LIFESTYLE CONSIDERATIONS ────────────────────────────
+const CONSIDERATION_CHIPS=[
+  {group:'Training',chips:[
+    {val:'strength',label:'Strength training'},
+    {val:'yoga',label:'Yoga / Pilates'},
+    {val:'crosstraining',label:'Another sport'},
+    {val:'swimming_extra',label:'Extra swim access'},
+  ]},
+  {group:'Schedule',chips:[
+    {val:'earlymorning',label:'Early mornings only'},
+    {val:'eveningonly',label:'Evenings only'},
+    {val:'shiftwork',label:'Shift / irregular hours'},
+    {val:'travel',label:'Frequent travel'},
+    {val:'wfh',label:'Work from home'},
+  ]},
+  {group:'Life',chips:[
+    {val:'kids',label:'Young children / childcare'},
+    {val:'highstress',label:'High work stress'},
+    {val:'sleep',label:'Sleep issues'},
+    {val:'nutrition',label:'Nutrition support needed'},
+    {val:'social',label:'Active social / events calendar'},
+  ]},
+];
+
+function getLifestyleFields(){return [{type:'lifestyle',id:'lifestyle'}];}
+
+function toggleChip(btn){
+  btn.classList.toggle('selected');
+  // keep wizardData in sync
+  const val=btn.dataset.val;
+  if(!_wiz.data.considerations) _wiz.data.considerations=[];
+  if(btn.classList.contains('selected')){
+    if(!_wiz.data.considerations.includes(val)) _wiz.data.considerations.push(val);
+  } else {
+    _wiz.data.considerations=_wiz.data.considerations.filter(v=>v!==val);
+  }
+}
+
+// Consideration → human readable label
+const CHIP_LABELS={
+  strength:'Strength Training',yoga:'Yoga / Pilates',crosstraining:'Other Sport',
+  swimming_extra:'Extra Swim Access',earlymorning:'Early Mornings Only',
+  eveningonly:'Evenings Only',shiftwork:'Shift / Irregular Hours',
+  travel:'Frequent Travel',wfh:'Works From Home',kids:'Young Children / Childcare',
+  highstress:'High Work Stress',sleep:'Sleep Issues',
+  nutrition:'Nutrition Support',social:'Active Social Calendar',
+};
+
+// Consideration → plan recommendation note
+const CHIP_NOTES={
+  strength:'Include 1–2 strength sessions/week on non-key training days (e.g. Tue/Thu). Focus on compound movements and injury prevention. Reduce training load slightly on days that follow heavy strength sessions.',
+  yoga:'Schedule yoga/Pilates on rest days or light training days. Excellent for recovery and injury prevention — treat it as an active rest session.',
+  crosstraining:'Balance cross-training so it does not conflict with key sessions. Count it toward total weekly training load. Substitute a Z1 session if fatigued.',
+  swimming_extra:'Additional swim access is a big advantage. Consider adding an extra easy swim on rest days during the build and peak phases.',
+  earlymorning:'Morning sessions are prioritised. Lay kit out the night before. Keep pre-session nutrition simple (banana or energy gel is sufficient for sessions under 60 min).',
+  eveningonly:'Evening sessions scheduled after work. Be mindful of eating 2–3 hrs before key sessions. Quality of sleep directly impacts evening training performance.',
+  shiftwork:'Adapt sessions to your shift pattern rather than rigid days. Prioritise key sessions (long bike/run, quality swim) on full rest days from work.',
+  travel:'During travel weeks: substitute outdoor rides with hotel gym or Zwift. Pack resistance bands for strength. Most hotels have a treadmill for run sessions.',
+  wfh:'Working from home provides flexible scheduling. Use the lunch hour for shorter sessions and protect mornings/evenings for longer key sessions.',
+  kids:'Key sessions (long bike, long run) are best done early before family commitments. Communicate the schedule with your family — weekend long sessions will need coordination.',
+  highstress:'Stress and training load compound each other. On very high-stress days, downgrade sessions to easy Z1–Z2 rather than skipping entirely. Sleep is non-negotiable.',
+  sleep:'Prioritise sleep above extra training sessions. If sleep is under 6 hrs, reduce session intensity. Recovery happens during sleep — without it, training load is wasted.',
+  nutrition:'Consider working with a nutritionist around race day fuelling. Test race nutrition (gels, bars, electrolytes) in training from Phase 2 onwards. Never experiment on race day.',
+  social:'Social events and training blocks can coexist. Plan recovery weeks around busy social periods. A missed session during a social week matters less than chronic fatigue.',
+};
+
+function getLifestyleFields(){return [{type:'lifestyle',id:'lifestyle'}];}
 
 function getGoalOpts(d){
   const t=d.raceType||'run-half';
@@ -1892,8 +1973,26 @@ function renderWizStep(){
       inp=`<div class="opt-grid">${opts.map(o=>`<button type="button" class="opt-btn${_wiz.data[f.id]===o.value?' selected':''}" onclick="selOpt('${f.id}','${o.value}',this)"><div class="opt-title">${o.title}</div><div class="opt-desc">${o.desc}</div></button>`).join('')}
       <button type="button" class="opt-btn${_wiz.data[f.id]==='other'?' selected':''}" onclick="selOpt('${f.id}','other',this)"><div class="opt-title">Other</div><div class="opt-desc">Describe your situation</div></button></div>
       <div class="opt-other-wrap${_wiz.data[f.id]==='other'?' visible':''}" id="ow_${f.id}"><input class="wiz-input" id="owt_${f.id}" type="text" placeholder="Tell us more…" value="${_wiz.data[f.id+'_other']||''}"></div>`;
+    } else if(f.type==='lifestyle'){
+      const selected=_wiz.data.considerations||[];
+      const chipGroups=CONSIDERATION_CHIPS.map(g=>`
+        <div class="chip-group">
+          <span class="chip-group-label">${g.group}</span>
+          <div class="chip-grid">${g.chips.map(c=>`
+            <button type="button" class="chip-toggle${selected.includes(c.val)?' selected':''}" data-val="${c.val}" onclick="toggleChip(this)">
+              ${IC.check} ${c.label}
+            </button>`).join('')}
+          </div>
+        </div>`).join('');
+      inp=`
+        ${chipGroups}
+        <div class="wiz-field" style="margin-bottom:0">
+          <label class="wiz-label">Anything else we should know?</label>
+          <textarea class="considerations-textarea" id="wf_considerations_note" placeholder="e.g. I coach kids football on weekends, I'm aiming for a promotion and work is hectic until August, I prefer not to train on Sundays…">${_wiz.data.considerationsNote||''}</textarea>
+          <p class="considerations-hint">The more context you give, the more accurately we can tailor your plan to your life — not just your sport.</p>
+        </div>`;
     }
-    return`<div class="wiz-field"><label class="wiz-label">${f.label}</label>${inp}</div>`;
+    return`<div class="wiz-field"><label class="wiz-label">${f.label||''}</label>${inp}</div>`;
   }).join('');
 }
 
@@ -1910,6 +2009,12 @@ function wizNext(){
   const step=WIZ_STEPS[_wiz.step];
   let fields=step.fields||[];if(step.fields_fn)fields=window[step.fields_fn](_wiz.data);
   fields.forEach(f=>{
+    if(f.type==='lifestyle'){
+      // Collect textarea note (chips already tracked live via toggleChip)
+      const ta=document.getElementById('wf_considerations_note');
+      if(ta)_wiz.data.considerationsNote=ta.value.trim();
+      return;
+    }
     const el=document.getElementById('wf_'+f.id);if(el)_wiz.data[f.id]=el.value;
     if(f.type==='opts'&&_wiz.data[f.id]==='other'){const ot=document.getElementById('owt_'+f.id);if(ot)_wiz.data[f.id+'_other']=ot.value.trim();}
   });
@@ -1933,6 +2038,18 @@ function generatePlan(d){
   const {r:hours}=resolveOther(d.weeklyHours,'8-10',d.weeklyHours_other);
   const {r:inj}=resolveOther(d.injuries,'none',d.injuries_other);
   const otherNotes=[d.goal_other,d.runFitness_other,d.bikeFitness_other,d.weeklyHours_other,d.injuries_other].filter(Boolean).join(' · ');
+
+  // Build personalised consideration notes from step 6
+  const selectedChips=d.considerations||[];
+  const chipNoteLines=selectedChips.map(c=>CHIP_NOTES[c]).filter(Boolean);
+  if(d.considerationsNote) chipNoteLines.push(`Additional note: ${d.considerationsNote}`);
+  const considerationsBlock=chipNoteLines.length
+    ? '\n\nPersonalised considerations:\n'+chipNoteLines.map((n,i)=>`${i+1}. ${n}`).join('\n')
+    : '';
+
+  // Profile additions from considerations
+  const considerationsProfile={};
+  if(selectedChips.length) considerationsProfile['Considerations']=[...selectedChips.map(c=>CHIP_LABELS[c]||c),...(d.considerationsNote?[d.considerationsNote]:[])].join(', ');
   let p1=Math.round(totalWeeks*.33),p2=Math.round(totalWeeks*.33),p3=Math.round(totalWeeks*.2),p4=totalWeeks-p1-p2-p3;
   if(p4<1)p4=1;
   const weeks=[];let wi=0;
@@ -1944,7 +2061,7 @@ function generatePlan(d){
     for(let i=0;i<p3;i++)push('peak',{Mon:'40 min race-pace run',Tue:'Gym 55 min (full station practice)',Thu:'35 min tempo run',Sat:'Full Hyrox simulation — 8 rounds at target pace'},false,i===p3-1?'Last full sim before taper':'');
     for(let i=0;i<p4;i++)push('taper',{Mon:`${Math.max(18,25-i*3)} min easy run`,Wed:'20 min easy + strides',Thu:`Gym ${30} min (light — maintain feel)`,Sat:`${Math.max(15,20-i*5)} min easy run`},false,`-${25+i*20}% volume`);
     const gls={finish:'Complete all stations',sub90:'Sub-90 min',sub75:'Sub-75 min',sub60:'Sub-60 min'};
-    return{id,name:d.name||'Hyrox',type,date:d.raceDate,goal:d.goal==='other'&&d.goal_other?d.goal_other:(gls[goal]||goal),goalNote:gNote||'8 rounds: 1 km run + 1 station',splits:[{label:'Total',dist:'8 km + 8 stations',time:goal.replace('sub','Sub-').replace('90','1:30').replace('75','1:15').replace('60','1:00'),pace:'',cls:'run'}],profile:{run,gym:d.gymFitness||'moderate',hoursPerWeek:hours,injuries:inj},phases:[{id:'base',name:'Base',dates:`Weeks 1–${p1}`,desc:'Build running base and introduce functional movements.',weeks:weeks.filter(w=>w.phase==='base'),note:'Comfortable 30 min run + basic station movements'},{id:'build',name:'Build',dates:`Weeks ${p1+1}–${p1+p2}`,desc:'Add intensity. Practice stations under fatigue.',weeks:weeks.filter(w=>w.phase==='build'),note:'Complete 4-round sim without stopping'},{id:'peak',name:'Peak',dates:`Weeks ${p1+p2+1}–${p1+p2+p3}`,desc:'Full 8-round simulations. Race-pace run work.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Full 8-round sim at target pace'},{id:'taper',name:'Taper',dates:`Weeks ${p1+p2+p3+1}–${totalWeeks}`,desc:'Volume drops. Keep intensity. Arrive sharp.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Short and punchy — no heroics.'}],gear:[{group:'Race Day',color:'var(--hyrox)',items:['Trainers (low-drop for sled)','Knee sleeves (optional)','GPS watch','Water bottle','Race kit comfortable for rowing + running']}],zones:[{z:'Z2',name:'Easy Run',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo / Station pace',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Race effort',pct:'83–89%',rpe:'7–8',feel:'Hard, controlled',color:'var(--z4)'}],notes:'Stations: SkiErg · Sled Push · Sled Pull · Burpee Broad Jump · Rowing · Farmers Carry · Sandbag Lunges · Wall Balls.'+(otherNotes?' Notes: '+otherNotes:''),log:{}};
+    return{id,name:d.name||'Hyrox',type,date:d.raceDate,goal:d.goal==='other'&&d.goal_other?d.goal_other:(gls[goal]||goal),goalNote:gNote||'8 rounds: 1 km run + 1 station',splits:[{label:'Total',dist:'8 km + 8 stations',time:goal.replace('sub','Sub-').replace('90','1:30').replace('75','1:15').replace('60','1:00'),pace:'',cls:'run'}],profile:{run,gym:d.gymFitness||'moderate',hoursPerWeek:hours,injuries:inj},phases:[{id:'base',name:'Base',dates:`Weeks 1–${p1}`,desc:'Build running base and introduce functional movements.',weeks:weeks.filter(w=>w.phase==='base'),note:'Comfortable 30 min run + basic station movements'},{id:'build',name:'Build',dates:`Weeks ${p1+1}–${p1+p2}`,desc:'Add intensity. Practice stations under fatigue.',weeks:weeks.filter(w=>w.phase==='build'),note:'Complete 4-round sim without stopping'},{id:'peak',name:'Peak',dates:`Weeks ${p1+p2+1}–${p1+p2+p3}`,desc:'Full 8-round simulations. Race-pace run work.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Full 8-round sim at target pace'},{id:'taper',name:'Taper',dates:`Weeks ${p1+p2+p3+1}–${totalWeeks}`,desc:'Volume drops. Keep intensity. Arrive sharp.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Short and punchy — no heroics.'}],gear:[{group:'Race Day',color:'var(--hyrox)',items:['Trainers (low-drop for sled)','Knee sleeves (optional)','GPS watch','Water bottle','Race kit comfortable for rowing + running']}],zones:[{z:'Z2',name:'Easy Run',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo / Station pace',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Race effort',pct:'83–89%',rpe:'7–8',feel:'Hard, controlled',color:'var(--z4)'}],notes:'Stations: SkiErg · Sled Push · Sled Pull · Burpee Broad Jump · Rowing · Farmers Carry · Sandbag Lunges · Wall Balls.'+(otherNotes?' Notes: '+otherNotes:'')+considerationsBlock,log:{}};
   }
 
   if(type.startsWith('run')){
@@ -1957,7 +2074,7 @@ function generatePlan(d){
     for(let i=0;i<p3;i++){const reps=5+i,dist=isMara?1200:is10k?600:1000;push('peak',{Mon:'50 min easy',Tue:`${reps}×${dist}m @ Z4 (90s recovery)`,Thu:'45 min tempo (Z3)',Sat:`${Math.max(longMax-10,80)} min (30 min @ race pace)`},false,i===p3-1?'Final quality session before taper':'');}
     for(let i=0;i<p4;i++){const pc=Math.round(100-((i+1)/(p4+1))*60);push('taper',{Mon:`${Math.round(40*pc/100)} min (10 min @ race pace)`,Wed:`${Math.round(35*pc/100)} min easy + strides`,Thu:`${Math.round(25*pc/100)} min easy`,Sat:`${Math.round(55*pc/100)} min easy`},false,`-${100-pc}% volume`);}
     const gls={finish:'Complete the distance',sub200:'Sub-2:00 (5:41/km)',sub145:'Sub-1:45 (4:59/km)',sub130:'Sub-1:30 (4:16/km)',sub430:'Sub-4:30',sub400:'Sub-4:00',sub330:'Sub-3:30',sub60:'Sub-60 min',sub55:'Sub-55 min',sub50:'Sub-50 min',sub30:'Sub-30 min',sub25:'Sub-25 min',sub22:'Sub-22 min'};
-    return{id,name:d.name||typeLabel(type),type,date:d.raceDate,goal:d.goal==='other'&&d.goal_other?d.goal_other:(gls[goal]||goal),goalNote:d.goal==='other'&&d.goal_other?'Your target: '+d.goal_other:(paceNote?'Target: '+paceNote:''),splits:[{label:'Run',dist:isMara?'42.2 km':isHalf?'21.1 km':is10k?'10 km':'5 km',time:goal==='finish'||goal==='other'?'Complete':goal.replace('sub','Sub-').replace('200','2:00').replace('145','1:45').replace('130','1:30'),pace:paceNote,cls:'run'}],profile:{run,hoursPerWeek:hours,injuries:inj,...(otherNotes?{notes:otherNotes}:{})},phases:[{id:'base',name:'Base',dates:`Weeks 1–${p1}`,desc:'Easy aerobic miles only. Build the foundation.',weeks:weeks.filter(w=>w.phase==='base'),note:'Long run comfortable, HR controlled'},{id:'build',name:'Build',dates:`Weeks ${p1+1}–${p1+p2}`,desc:'Add tempo runs. Build long run to near target.',weeks:weeks.filter(w=>w.phase==='build'),note:'Holding tempo comfortably, long run aerobic'},{id:'peak',name:'Peak',dates:`Weeks ${p1+p2+1}–${p1+p2+p3}`,desc:'Quality interval sessions. Peak mileage.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Best fitness of the plan. Taper next.'},{id:'taper',name:'Taper',dates:`Weeks ${p1+p2+p3+1}–${totalWeeks}`,desc:'Volume drops. Intensity stays. Trust the process.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Feeling flat is normal. Legs are consolidating.'}],gear:[{group:'Race Day',color:'var(--run)',items:['Race shoes (broken in)','Race number + belt','Cap/visor','GPS watch','2–3 gels (tested)','Electrolytes','Anti-chafe cream','Sunglasses']}],zones:[{z:'Z2',name:'Easy',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Intervals',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],notes:otherNotes||'',log:{}};
+    return{id,name:d.name||typeLabel(type),type,date:d.raceDate,goal:d.goal==='other'&&d.goal_other?d.goal_other:(gls[goal]||goal),goalNote:d.goal==='other'&&d.goal_other?'Your target: '+d.goal_other:(paceNote?'Target: '+paceNote:''),splits:[{label:'Run',dist:isMara?'42.2 km':isHalf?'21.1 km':is10k?'10 km':'5 km',time:goal==='finish'||goal==='other'?'Complete':goal.replace('sub','Sub-').replace('200','2:00').replace('145','1:45').replace('130','1:30'),pace:paceNote,cls:'run'}],profile:{run,hoursPerWeek:hours,injuries:inj,...(otherNotes?{notes:otherNotes}:{}),...considerationsProfile},phases:[{id:'base',name:'Base',dates:`Weeks 1–${p1}`,desc:'Easy aerobic miles only. Build the foundation.',weeks:weeks.filter(w=>w.phase==='base'),note:'Long run comfortable, HR controlled'},{id:'build',name:'Build',dates:`Weeks ${p1+1}–${p1+p2}`,desc:'Add tempo runs. Build long run to near target.',weeks:weeks.filter(w=>w.phase==='build'),note:'Holding tempo comfortably, long run aerobic'},{id:'peak',name:'Peak',dates:`Weeks ${p1+p2+1}–${p1+p2+p3}`,desc:'Quality interval sessions. Peak mileage.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Best fitness of the plan. Taper next.'},{id:'taper',name:'Taper',dates:`Weeks ${p1+p2+p3+1}–${totalWeeks}`,desc:'Volume drops. Intensity stays. Trust the process.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Feeling flat is normal. Legs are consolidating.'}],gear:[{group:'Race Day',color:'var(--run)',items:['Race shoes (broken in)','Race number + belt','Cap/visor','GPS watch','2–3 gels (tested)','Electrolytes','Anti-chafe cream','Sunglasses']}],zones:[{z:'Z2',name:'Easy',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Intervals',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],notes:(otherNotes||'')+considerationsBlock,log:{}};
   }
 
   // Triathlon generic
@@ -1968,7 +2085,7 @@ function generatePlan(d){
   for(let i=0;i<p3;i++)push('peak',{Mon:'55 min run (race pace)',Tue:'Peak interval (90 min)',Wed:'60 min steady run',Fri:swimLabel,Sat:`${150+i*10} min bike + ${20+i*5} min run`},false,i===Math.floor(p3/2)?'Race simulation this Saturday':'');
   for(let i=0;i<p4;i++)push('taper',{Mon:`${Math.max(20,35-i*5)} min run`,Tue:`${Math.max(30,65-i*10)} min easy bike`,Wed:`${Math.max(15,30-i*5)} min easy`,Fri:swimLabel,Sat:`${Math.max(40,90-i*15)} min easy + short run`},false,`-${25+i*15}% volume`);
   const triGls={finish:'Cross the finish line',sub6:'Sub-6:00',sub5:'Sub-5:00',podium:'Age-Group Podium',sub12:'Sub-12:00',sub10:'Sub-10:00',sub3:'Sub-3:00',sub230:'Sub-2:30',sub2:'Sub-2:00',sub130:'Sub-1:30',sub115:'Sub-1:15',sub60:'Sub-60 min'};
-  return{id,name:d.name||typeLabel(type),type,date:d.raceDate,goal:d.goal==='other'&&d.goal_other?d.goal_other:(triGls[goal]||goal),goalNote:d.goal==='other'&&d.goal_other?'Your target: '+d.goal_other:'',splits:[],profile:{swim,bike,run,hoursPerWeek:hours,injuries:inj,...(otherNotes?{notes:otherNotes}:{})},phases:[{id:'base',name:'Base',dates:`Weeks 1–${p1}`,desc:'Build aerobic foundation across all disciplines.',weeks:weeks.filter(w=>w.phase==='base'),note:''},{id:'build',name:'Build',dates:`Weeks ${p1+1}–${p1+p2}`,desc:'Add bricks, intervals, and race-specific sessions.',weeks:weeks.filter(w=>w.phase==='build'),note:''},{id:'peak',name:'Peak',dates:`Weeks ${p1+p2+1}–${p1+p2+p3}`,desc:'Peak volume. Race simulation. Hardest weeks.',weeks:weeks.filter(w=>w.phase==='peak'),note:''},{id:'taper',name:'Taper',dates:`Weeks ${p1+p2+p3+1}–${totalWeeks}`,desc:'Arrive fresh. Volume drops. Intensity stays.',weeks:weeks.filter(w=>w.phase==='taper'),note:''}],gear:[{group:'Swim',color:'var(--swim)',items:['Wetsuit','Goggles (+ spare)','Anti-chafe cream']},{group:'Bike',color:'var(--bike)',items:['Bike + helmet','Cycling shoes','Bottles + nutrition','CO2 + spare tube']},{group:'Run',color:'var(--run)',items:['Running shoes','Race belt','Cap/visor','Gels']}],zones:[{z:'Z2',name:'Aerobic',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Threshold',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],notes:otherNotes||'',log:{}};
+  return{id,name:d.name||typeLabel(type),type,date:d.raceDate,goal:d.goal==='other'&&d.goal_other?d.goal_other:(triGls[goal]||goal),goalNote:d.goal==='other'&&d.goal_other?'Your target: '+d.goal_other:'',splits:[],profile:{swim,bike,run,hoursPerWeek:hours,injuries:inj,...(otherNotes?{notes:otherNotes}:{}),...considerationsProfile},phases:[{id:'base',name:'Base',dates:`Weeks 1–${p1}`,desc:'Build aerobic foundation across all disciplines.',weeks:weeks.filter(w=>w.phase==='base'),note:''},{id:'build',name:'Build',dates:`Weeks ${p1+1}–${p1+p2}`,desc:'Add bricks, intervals, and race-specific sessions.',weeks:weeks.filter(w=>w.phase==='build'),note:''},{id:'peak',name:'Peak',dates:`Weeks ${p1+p2+1}–${p1+p2+p3}`,desc:'Peak volume. Race simulation. Hardest weeks.',weeks:weeks.filter(w=>w.phase==='peak'),note:''},{id:'taper',name:'Taper',dates:`Weeks ${p1+p2+p3+1}–${totalWeeks}`,desc:'Arrive fresh. Volume drops. Intensity stays.',weeks:weeks.filter(w=>w.phase==='taper'),note:''}],gear:[{group:'Swim',color:'var(--swim)',items:['Wetsuit','Goggles (+ spare)','Anti-chafe cream']},{group:'Bike',color:'var(--bike)',items:['Bike + helmet','Cycling shoes','Bottles + nutrition','CO2 + spare tube']},{group:'Run',color:'var(--run)',items:['Running shoes','Race belt','Cap/visor','Gels']}],zones:[{z:'Z2',name:'Aerobic',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Threshold',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],notes:(otherNotes||'')+considerationsBlock,log:{}};
 }
 
 // ─── MOBILE SIDEBAR ──────────────────────────────────────────────
