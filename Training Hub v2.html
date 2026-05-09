@@ -120,6 +120,21 @@ svg{display:block;}
 .rc-goal-badge{background:var(--red-dim);color:var(--red2);border:1px solid var(--red-border);font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;letter-spacing:.03em;}
 .rc-conflict{font-size:11px;color:#fbbf24;display:flex;align-items:center;gap:4px;}
 .rc-conflict svg{width:11px;height:11px;}
+/* Delete trigger button on race card */
+.rc-delete-btn{background:transparent;border:none;color:var(--t3);cursor:pointer;padding:4px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;transition:color .15s,background .15s;flex-shrink:0;}
+.rc-delete-btn svg{width:14px;height:14px;display:block;}
+.rc-delete-btn:hover{color:#f87171;background:rgba(248,113,113,.1);}
+/* Confirmation strip — hidden by default, shown when .confirming */
+.rc-confirm-strip{display:none;align-items:center;justify-content:space-between;gap:8px;padding:10px 20px;background:rgba(239,68,68,.07);border-top:1px solid rgba(239,68,68,.18);}
+.race-card.confirming{border-color:rgba(239,68,68,.35);}
+.race-card.confirming .rc-confirm-strip{display:flex;}
+.rc-confirm-msg{font-size:12px;color:#f87171;font-weight:500;}
+.rc-confirm-btns{display:flex;gap:6px;}
+.btn-confirm-cancel{background:transparent;border:1px solid var(--border2);color:var(--t2);border-radius:5px;padding:5px 12px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:border-color .15s;}
+.btn-confirm-cancel:hover{border-color:var(--t1);color:var(--white);}
+.btn-confirm-delete{background:#ef4444;border:none;color:#fff;border-radius:5px;padding:5px 14px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:5px;}
+.btn-confirm-delete svg{width:12px;height:12px;}
+.btn-confirm-delete:hover{background:#dc2626;}
 .rc-phase{font-size:11px;color:var(--t3);}
 /* progress bar on card */
 .rc-progress{height:2px;background:var(--border);margin-top:14px;border-radius:1px;}
@@ -1072,11 +1087,16 @@ function renderHub(){
     const confl=conflictIds.has(r.id);
     const wn=getCurrentWeekNum(r),ph=getCurrentPhase(r);
     const phLabel=ph?`${ph.name} · W${wn}`:'';
-    return`<div class="race-card" onclick="showRace('${r.id}')">
+    return`<div class="race-card" id="rcard_${r.id}" onclick="showRace('${r.id}')">
       <div class="race-card-stripe c-${col}"></div>
       <div class="race-card-inner">
-        <div class="rc-type">${IC[typeIcon(r.type)]||IC.flag} ${typeLabel(r.type)}</div>
-        <div class="rc-name">${r.name}</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px">
+          <div style="flex:1;min-width:0">
+            <div class="rc-type">${IC[typeIcon(r.type)]||IC.flag} ${typeLabel(r.type)}</div>
+            <div class="rc-name">${r.name}</div>
+          </div>
+          <button class="rc-delete-btn" onclick="event.stopPropagation();showDeleteConfirm('${r.id}')" title="Delete race">${IC.trash}</button>
+        </div>
         <div class="rc-date">${IC.calendar} ${fmtDate(r.date)}</div>
         <div class="rc-stats">
           <div class="rc-stat"><div class="rc-stat-n">${daysUntil(r.date)}</div><div class="rc-stat-l">Days</div></div>
@@ -1089,6 +1109,13 @@ function renderHub(){
           ${phLabel?`<span class="rc-phase">${phLabel}</span>`:''}
         </div>
         <div class="rc-progress"><div class="rc-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="rc-confirm-strip">
+        <span class="rc-confirm-msg">Delete <strong>${r.name}</strong>? This cannot be undone.</span>
+        <div class="rc-confirm-btns">
+          <button class="btn-confirm-cancel" onclick="event.stopPropagation();hideDeleteConfirm('${r.id}')">Cancel</button>
+          <button class="btn-confirm-delete" onclick="event.stopPropagation();deleteRace('${r.id}')">${IC.trash} Delete</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -1954,14 +1981,36 @@ function switchTab(tab,btn){
   ['today','plan','log','gear','overview'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
 }
 
+function showDeleteConfirm(raceId){
+  // Dismiss any other open confirmations first
+  document.querySelectorAll('.race-card.confirming').forEach(c=>c.classList.remove('confirming'));
+  const card=document.getElementById('rcard_'+raceId);
+  if(card) card.classList.add('confirming');
+}
+function hideDeleteConfirm(raceId){
+  const card=document.getElementById('rcard_'+raceId);
+  if(card) card.classList.remove('confirming');
+}
 function deleteRace(raceId){
-  if(!confirm('Remove this race and its plan?'))return;
   DATA.races=DATA.races.filter(r=>r.id!==raceId);
-  save();showHub();
+  save();
+  // If currently viewing the deleted race, go back to hub
+  if(ST.raceId===raceId) showHub(); else{renderSidebar();renderHub();}
 }
 
 // ─── MOBILE SWIPE & KEYBOARD ─────────────────────────────────────
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSidebar();closeWizard();closeEdit();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeSidebar();closeWizard();closeEdit();
+    document.querySelectorAll('.race-card.confirming').forEach(c=>c.classList.remove('confirming'));
+  }
+});
+// Clicking outside a confirming card dismisses it
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.race-card.confirming')&&!e.target.closest('.rc-delete-btn')){
+    document.querySelectorAll('.race-card.confirming').forEach(c=>c.classList.remove('confirming'));
+  }
+});
 
 // Swipe right to open sidebar, swipe left on sidebar to close
 (function(){
