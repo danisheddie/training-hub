@@ -556,26 +556,44 @@ svg{display:block;}
   --border:#252637;--border2:#2e3048;
   --white:#eff0f8;--t1:#c8c9e0;--t2:#8889aa;--t3:#4e4f6e;
 }
-[data-theme="ironman"]{
-  --bg:#080808;--s1:#0f0f0f;--s2:#161616;--s3:#202020;
-  --border:#242424;--border2:#303030;
-  --white:#f0f0f0;--t1:#c0c0c0;--t2:#808080;--t3:#484848;
+[data-theme="ocean"]{
+  --bg:#061120;--s1:#0a1628;--s2:#0e1f3a;--s3:#162845;
+  --border:#1a3050;--border2:#1e3a5f;
+  --white:#e2f0fb;--t1:#a8c8e8;--t2:#5a88aa;--t3:#2a4860;
+  --red:#06b6d4;--red2:#22d3ee;--red-dim:rgba(6,182,212,.1);--red-border:rgba(6,182,212,.25);
 }
 [data-theme="slate"]{
   --bg:#0f1117;--s1:#161b2e;--s2:#1d2340;--s3:#252c4e;
   --border:#2a3158;--border2:#333d6a;
   --white:#e8eaf6;--t1:#b0b8d8;--t2:#7080a8;--t3:#404c6e;
+  --red:#818cf8;--red2:#a5b4fc;--red-dim:rgba(129,140,248,.1);--red-border:rgba(129,140,248,.25);
+}
+[data-theme="hyrox"]{
+  --bg:#0a0a0a;--s1:#111111;--s2:#181818;--s3:#222222;
+  --border:#2a2a2a;--border2:#333333;
+  --white:#fafafa;--t1:#d0d0d0;--t2:#888888;--t3:#484848;
+  --red:#f59e0b;--red2:#fbbf24;--red-dim:rgba(245,158,11,.1);--red-border:rgba(245,158,11,.28);
 }
 [data-theme="light"]{
   --bg:#f4f5f7;--s1:#ffffff;--s2:#f0f1f4;--s3:#e8eaef;
   --border:#dde0e8;--border2:#c8ccd8;
   --red:#d32f2f;--red2:#e53935;--red-dim:rgba(211,47,47,.08);--red-border:rgba(211,47,47,.2);
-  --white:#1a1b2e;--t1:#2d2f45;--t2:#6668848;--t3:#9496b0;
+  --white:#1a1b2e;--t1:#2d2f45;--t2:#666884;--t3:#9496b0;
   --swim:#0288d1;--bike:#f57f17;--run:#2e7d32;
 }
 [data-theme="light"] .sb-race-icon.c-tri{background:rgba(167,139,250,.2);}
 [data-theme="light"] .sb-race-icon.c-run{background:rgba(46,125,50,.12);}
 [data-theme="light"] .race-card,.today-card,.log-week,.gear-group,.ov-stat,.log-stat{box-shadow:0 1px 4px rgba(0,0,0,.08);}
+
+/* ─── PER-RACE THEME BAR ─────────────────────────────────────── */
+.race-theme-bar{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.race-theme-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);font-weight:600;white-space:nowrap;}
+.race-theme-swatches{display:flex;gap:5px;}
+.race-theme-swatch{width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;}
+.race-theme-swatch:hover{transform:scale(1.25);}
+.race-theme-swatch.active{border-color:var(--white);}
+.race-theme-clear{font-size:10px;color:var(--t3);cursor:pointer;letter-spacing:.06em;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;padding:2px 6px;border:1px solid var(--border2);border-radius:4px;background:none;transition:color .15s,border-color .15s;}
+.race-theme-clear:hover{color:var(--t1);border-color:var(--t2);}
 
 /* ─── UTILS ──────────────────────────────────────────────────── */
 .divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
@@ -758,10 +776,11 @@ svg{display:block;}
   <div class="theme-bar">
     <div class="theme-bar-label">Theme</div>
     <div class="theme-swatches">
-      <div class="theme-swatch active" data-t="dark"   title="Dark"    style="background:#0d0e12;border-color:var(--border2)"  onclick="setTheme('dark',this)"></div>
-      <div class="theme-swatch"        data-t="ironman" title="Ironman" style="background:#080808;border:2px solid #cc0000"      onclick="setTheme('ironman',this)"></div>
-      <div class="theme-swatch"        data-t="slate"   title="Slate"   style="background:#161b2e"                              onclick="setTheme('slate',this)"></div>
-      <div class="theme-swatch"        data-t="light"   title="Light"   style="background:#f4f5f7;border:2px solid #dde0e8"     onclick="setTheme('light',this)"></div>
+      <div class="theme-swatch active" data-t="dark"   title="Dark"   style="background:#0d0e12"                           onclick="setTheme('dark',this)"></div>
+      <div class="theme-swatch"        data-t="ocean"  title="Ocean"  style="background:#0a1628;border-color:#06b6d4"         onclick="setTheme('ocean',this)"></div>
+      <div class="theme-swatch"        data-t="slate"  title="Slate"  style="background:#161b2e;border-color:#818cf8"         onclick="setTheme('slate',this)"></div>
+      <div class="theme-swatch"        data-t="hyrox"  title="Hyrox"  style="background:#111111;border-color:#f59e0b"         onclick="setTheme('hyrox',this)"></div>
+      <div class="theme-swatch"        data-t="light"  title="Light"  style="background:#f4f5f7;border:2px solid #dde0e8"     onclick="setTheme('light',this)"></div>
     </div>
   </div>
   <div class="sb-footer">
@@ -826,6 +845,11 @@ svg{display:block;}
       <div class="splits-row" id="splits-row"></div>
       <div class="phase-progress-bar" id="phase-progress-bar"></div>
       <div class="pp-label" id="pp-label"></div>
+      <div class="race-theme-bar">
+        <span class="race-theme-label">Race theme</span>
+        <div class="race-theme-swatches" id="race-theme-swatches"></div>
+        <button class="race-theme-clear" id="race-theme-clear" onclick="clearRaceTheme()" style="display:none">Reset</button>
+      </div>
       <div class="race-tabs" style="margin-top:14px">
         <button class="r-tab active" data-tab="today" onclick="switchTab('today',this)">Today</button>
         <button class="r-tab" data-tab="plan" onclick="switchTab('plan',this)">Schedule</button>
@@ -1246,6 +1270,9 @@ function renderThisWeek(races){
 // ─── RACE VIEW ───────────────────────────────────────────────────
 function renderRace(raceId){
   const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  // Apply race-specific theme if set, else restore global
+  applyTheme(r.theme||getGlobalTheme());
+  renderRaceThemeSwatches(raceId);
   // header
   document.getElementById('rh-type').innerHTML=`${IC[typeIcon(r.type)]||IC.flag} ${typeLabel(r.type)}`;
   document.getElementById('rh-name').innerHTML=`<span class="ie-wrap" style="flex-wrap:nowrap">
@@ -2274,6 +2301,7 @@ function showHub(){
   document.getElementById('view-hub').style.display='block';
   document.getElementById('view-race').style.display='none';
   setMobTitle('Training Hub');
+  applyTheme(getGlobalTheme());
   closeSidebar();
   renderSidebar();renderHub();
 }
@@ -2473,15 +2501,54 @@ function saveProfileEdit(){
 }
 
 // ─── THEME ───────────────────────────────────────────────────────
-function setTheme(name,el){
-  document.documentElement.setAttribute('data-theme',name);
+// ─── THEME DEFINITIONS (for race swatches) ───────────────────────
+const THEMES=[
+  {id:'dark',  label:'Dark',  bg:'#0d0e12', border:''},
+  {id:'ocean', label:'Ocean', bg:'#0a1628', border:'#06b6d4'},
+  {id:'slate', label:'Slate', bg:'#161b2e', border:'#818cf8'},
+  {id:'hyrox', label:'Hyrox', bg:'#111111', border:'#f59e0b'},
+  {id:'light', label:'Light', bg:'#f4f5f7', border:'#dde0e8'},
+];
+
+function applyTheme(name){
+  document.documentElement.setAttribute('data-theme',name||'dark');
+}
+function setTheme(name){
+  applyTheme(name);
   localStorage.setItem('thubTheme',name);
   document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active',s.dataset.t===name));
 }
+function getGlobalTheme(){return localStorage.getItem('thubTheme')||'dark';}
+
+// ─── PER-RACE THEME ───────────────────────────────────────────────
+function renderRaceThemeSwatches(raceId){
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  const active=r.theme||'';
+  const el=document.getElementById('race-theme-swatches');if(!el)return;
+  el.innerHTML=THEMES.map(t=>`
+    <div class="race-theme-swatch${active===t.id?' active':''}" title="${t.label}"
+      style="background:${t.bg};${t.border?'border-color:'+t.border:''}"
+      onclick="setRaceTheme('${raceId}','${t.id}')"></div>`).join('');
+  const clr=document.getElementById('race-theme-clear');
+  if(clr) clr.style.display=active?'':'none';
+}
+function setRaceTheme(raceId,theme){
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  r.theme=theme; save();
+  applyTheme(theme);
+  renderRaceThemeSwatches(raceId);
+}
+function clearRaceTheme(){
+  const raceId=ST.raceId;if(!raceId)return;
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  delete r.theme; save();
+  applyTheme(getGlobalTheme());
+  renderRaceThemeSwatches(raceId);
+}
+
 (function initTheme(){
   const t=localStorage.getItem('thubTheme')||'dark';
   document.documentElement.setAttribute('data-theme',t);
-  // Highlight active swatch after DOM ready
   requestAnimationFrame(()=>{
     document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active',s.dataset.t===t));
   });
