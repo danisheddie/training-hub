@@ -1848,20 +1848,20 @@ const WIZ_STEPS=[
 
 // ─── STEP 6: LIFESTYLE CONSIDERATIONS ────────────────────────────
 const CONSIDERATION_CHIPS=[
-  {group:'Training',chips:[
+  {group:'Training',otherId:'considerationsOther_training',chips:[
     {val:'strength',label:'Strength training'},
     {val:'yoga',label:'Yoga / Pilates'},
     {val:'crosstraining',label:'Another sport'},
     {val:'swimming_extra',label:'Extra swim access'},
   ]},
-  {group:'Schedule',chips:[
+  {group:'Schedule',otherId:'considerationsOther_schedule',chips:[
     {val:'earlymorning',label:'Early mornings only'},
     {val:'eveningonly',label:'Evenings only'},
     {val:'shiftwork',label:'Shift / irregular hours'},
     {val:'travel',label:'Frequent travel'},
     {val:'wfh',label:'Work from home'},
   ]},
-  {group:'Life',chips:[
+  {group:'Life',otherId:'considerationsOther_life',chips:[
     {val:'kids',label:'Young children / childcare'},
     {val:'highstress',label:'High work stress'},
     {val:'sleep',label:'Sleep issues'},
@@ -1983,6 +1983,7 @@ function renderWizStep(){
               ${IC.check} ${c.label}
             </button>`).join('')}
           </div>
+          ${g.otherId?`<input class="wiz-input" id="wf_${g.otherId}" type="text" placeholder="Other…" style="margin-top:8px;" value="${_wiz.data[g.otherId]||''}">`:``}
         </div>`).join('');
       inp=`
         ${chipGroups}
@@ -2013,6 +2014,7 @@ function wizNext(){
       // Collect textarea note (chips already tracked live via toggleChip)
       const ta=document.getElementById('wf_considerations_note');
       if(ta)_wiz.data.considerationsNote=ta.value.trim();
+      CONSIDERATION_CHIPS.forEach(g=>{if(g.otherId){const el=document.getElementById('wf_'+g.otherId);if(el)_wiz.data[g.otherId]=el.value.trim();}});
       return;
     }
     const el=document.getElementById('wf_'+f.id);if(el)_wiz.data[f.id]=el.value;
@@ -2042,6 +2044,8 @@ function generatePlan(d){
   // Build personalised consideration notes from step 6
   const selectedChips=d.considerations||[];
   const chipNoteLines=selectedChips.map(c=>CHIP_NOTES[c]).filter(Boolean);
+  const chipOthers=CONSIDERATION_CHIPS.map(g=>g.otherId&&d[g.otherId]?`${g.group} (other): ${d[g.otherId]}`:'').filter(Boolean);
+  chipOthers.forEach(o=>chipNoteLines.push(o));
   if(d.considerationsNote) chipNoteLines.push(`Additional note: ${d.considerationsNote}`);
   const considerationsBlock=chipNoteLines.length
     ? '\n\nPersonalised considerations:\n'+chipNoteLines.map((n,i)=>`${i+1}. ${n}`).join('\n')
@@ -2049,7 +2053,8 @@ function generatePlan(d){
 
   // Profile additions from considerations
   const considerationsProfile={};
-  if(selectedChips.length) considerationsProfile['Considerations']=[...selectedChips.map(c=>CHIP_LABELS[c]||c),...(d.considerationsNote?[d.considerationsNote]:[])].join(', ');
+  const allConsiderationLabels=[...selectedChips.map(c=>CHIP_LABELS[c]||c),...chipOthers,...(d.considerationsNote?[d.considerationsNote]:[])];
+  if(allConsiderationLabels.length) considerationsProfile['Considerations']=allConsiderationLabels.join(', ');
   let p1=Math.round(totalWeeks*.33),p2=Math.round(totalWeeks*.33),p3=Math.round(totalWeeks*.2),p4=totalWeeks-p1-p2-p3;
   if(p4<1)p4=1;
   const weeks=[];let wi=0;
