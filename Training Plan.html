@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ironman 70.3 Kenting 2026 · Danish Eddie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080808;
+  --surface: #101010;
+  --card: #161616;
+  --border: #252525;
+  --red: #cc0000;
+  --red-bright: #ff2020;
+  --red-dim: #4a0000;
+  --white: #efefef;
+  --gray: #777;
+  --light: #aaa;
+  --swim: #0ea5e9;
+  --bike: #f59e0b;
+  --run: #10b981;
+  --z1: #3b82f6;
+  --z2: #22c55e;
+  --z3: #eab308;
+  --z4: #f97316;
+  --z5: #ef4444;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; }
+h1,h2,h3,h4 { font-family:'Barlow Condensed',sans-serif; letter-spacing:.04em; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(8,8,8,.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:0; overflow-x:auto;
+  padding:0 1.5rem; height:52px;
+}
+nav a {
+  color:var(--gray); text-decoration:none; font-size:11px;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:0 14px; height:52px; display:flex; align-items:center;
+  border-bottom:2px solid transparent; white-space:nowrap;
+  transition:color .2s, border-color .2s;
+}
+nav a:hover, nav a.active { color:var(--white); border-bottom-color:var(--red); }
+nav .logo { color:var(--red); font-size:14px; font-weight:900; margin-right:16px; white-space:nowrap; }
+
+/* ── HERO ── */
+#hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  padding:80px 2rem 4rem;
+  background: radial-gradient(ellipse at 50% 60%, #2a0000 0%, #0d0000 40%, #080808 70%);
+  position:relative; overflow:hidden;
+}
+#hero::before {
+  content:''; position:absolute; inset:0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,.015) 79px, rgba(255,255,255,.015) 80px),
+              repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,.015) 79px, rgba(255,255,255,.015) 80px);
+}
+.hero-label {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  letter-spacing:.25em; font-size:12px; color:var(--red);
+  text-transform:uppercase; margin-bottom:1.5rem;
+}
+.hero-title {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:clamp(52px,10vw,110px); line-height:.95;
+  text-transform:uppercase; letter-spacing:.02em; margin-bottom:.5rem;
+}
+.hero-title span { color:var(--red); }
+.hero-sub {
+  font-family:'Barlow Condensed',sans-serif; font-weight:600;
+  font-size:clamp(18px,3vw,26px); color:var(--light);
+  letter-spacing:.2em; text-transform:uppercase; margin-bottom:2.5rem;
+}
+.disciplines {
+  display:flex; gap:2rem; justify-content:center; margin-bottom:3rem; flex-wrap:wrap;
+}
+.disc { display:flex; align-items:center; gap:.5rem; font-size:13px; font-weight:600; }
+.disc-icon { font-size:18px; }
+.disc.swim { color:var(--swim); }
+.disc.bike { color:var(--bike); }
+.disc.run  { color:var(--run);  }
+
+/* countdown */
+.countdown { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-bottom:3rem; }
+.cd-block { text-align:center; }
+.cd-num {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:clamp(36px,6vw,64px); line-height:1;
+  color:var(--white); display:block;
+  background:var(--card); border:1px solid var(--border);
+  padding:.3em .6em; min-width:80px; border-radius:6px;
+}
+.cd-label { font-size:10px; letter-spacing:.15em; color:var(--gray); text-transform:uppercase; margin-top:.4rem; }
+.goal-tag {
+  display:inline-block; background:var(--red); color:#fff;
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:18px; letter-spacing:.1em; padding:.4em 1.2em; border-radius:4px;
+}
+
+/* ── SECTIONS ── */
+section { padding:5rem 2rem; max-width:1100px; margin:0 auto; }
+.section-label {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  letter-spacing:.2em; font-size:11px; color:var(--red);
+  text-transform:uppercase; margin-bottom:.5rem;
+}
+.section-title {
+  font-size:clamp(28px,4vw,42px); font-weight:900;
+  text-transform:uppercase; margin-bottom:.5rem;
+}
+.section-sub { color:var(--light); margin-bottom:2.5rem; font-size:14px; }
+hr.divider { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
+
+/* ── SPLITS ── */
+.splits-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+.split-card {
+  background:var(--card); border:1px solid var(--border); border-radius:8px;
+  padding:1.25rem 1rem; text-align:center; position:relative; overflow:hidden;
+}
+.split-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.split-card.swim::before { background:var(--swim); }
+.split-card.t1::before, .split-card.t2::before { background:var(--gray); }
+.split-card.bike::before { background:var(--bike); }
+.split-card.run::before  { background:var(--run);  }
+.split-card.total::before { background:var(--red); }
+.split-icon { font-size:22px; margin-bottom:.3rem; }
+.split-name { font-size:10px; letter-spacing:.15em; color:var(--gray); text-transform:uppercase; margin-bottom:.25rem; }
+.split-dist { font-size:12px; color:var(--light); margin-bottom:.5rem; }
+.split-time {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:28px; color:var(--white);
+}
+.split-pace { font-size:11px; color:var(--gray); margin-top:.25rem; }
+.split-card.total .split-time { color:var(--red); font-size:34px; }
+
+/* ── PROFILE TABLE ── */
+.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.profile-card {
+  background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem;
+}
+.profile-card h4 { font-size:12px; letter-spacing:.15em; color:var(--gray); text-transform:uppercase; margin-bottom:.75rem; }
+.profile-row { display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid var(--border); font-size:13px; }
+.profile-row:last-child { border-bottom:none; }
+.profile-row .now { color:var(--z5); font-weight:600; }
+.profile-row .target { color:var(--z2); font-weight:600; }
+
+/* ── ZONES ── */
+.zone-table { width:100%; border-collapse:collapse; }
+.zone-table th { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--gray); padding:.6rem 1rem; text-align:left; border-bottom:1px solid var(--border); }
+.zone-table td { padding:.75rem 1rem; font-size:13px; border-bottom:1px solid var(--border); }
+.zone-table tr:last-child td { border-bottom:none; }
+.zone-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px; }
+.zone-badge { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; padding:.2em .6em; border-radius:3px; letter-spacing:.05em; }
+
+/* ── PHASE CARDS ── */
+.phase-card {
+  border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:2rem;
+  background:var(--card);
+}
+.phase-header {
+  display:flex; align-items:center; gap:1.25rem; padding:1.5rem;
+  cursor:pointer; user-select:none;
+  border-bottom:1px solid transparent; transition:border-color .2s;
+}
+.phase-header:hover { background:rgba(255,255,255,.02); }
+.phase-header.open { border-bottom-color:var(--border); }
+.phase-num {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:42px; line-height:1; min-width:52px;
+}
+.phase1 .phase-num { color:var(--z1); }
+.phase2 .phase-num { color:var(--z3); }
+.phase3 .phase-num { color:var(--z5); }
+.phase4 .phase-num { color:var(--light); }
+.phase-meta { flex:1; }
+.phase-meta h3 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:24px; text-transform:uppercase; letter-spacing:.05em;
+}
+.phase-meta .dates { font-size:12px; color:var(--gray); margin-top:.2rem; }
+.phase-meta .desc { font-size:13px; color:var(--light); margin-top:.4rem; }
+.phase-toggle { color:var(--gray); font-size:20px; transition:transform .3s; }
+.phase-header.open .phase-toggle { transform:rotate(180deg); }
+.phase-body { display:none; padding:1.5rem; }
+.phase-body.open { display:block; }
+
+/* ── TABLES ── */
+.data-table { width:100%; border-collapse:collapse; font-size:13px; }
+.data-table th {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--gray); padding:.6rem .75rem; text-align:left;
+  border-bottom:1px solid var(--border); background:var(--surface);
+}
+.data-table td { padding:.65rem .75rem; border-bottom:1px solid var(--border); vertical-align:top; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:rgba(255,255,255,.02); }
+.data-table tr.recovery td { background:rgba(30,30,50,.3); }
+.data-table tr.recovery td:first-child { border-left:3px solid var(--z1); }
+.week-badge {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  background:var(--border); color:var(--light);
+  padding:.15em .5em; border-radius:3px; font-size:12px;
+}
+.rec-badge {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:10px;
+  background:rgba(59,130,246,.15); color:var(--z1); border:1px solid rgba(59,130,246,.3);
+  padding:.15em .5em; border-radius:3px; letter-spacing:.08em;
+}
+.tag-swim { color:var(--swim); font-weight:600; }
+.tag-bike { color:var(--bike); font-weight:600; }
+.tag-run  { color:var(--run);  font-weight:600; }
+.tag-brick { color:#a78bfa; font-weight:600; }
+
+/* ── WORKOUT CARDS (trainer) ── */
+.trainer-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.tab-btn {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+  padding:.5em 1.2em; border-radius:5px; border:1px solid var(--border);
+  background:var(--surface); color:var(--gray); cursor:pointer;
+  transition:all .2s;
+}
+.tab-btn.active { background:var(--red); border-color:var(--red); color:#fff; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+.workout-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; padding:1.5rem; margin-bottom:1rem;
+}
+.workout-card h4 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:20px; text-transform:uppercase; letter-spacing:.05em;
+  margin-bottom:.25rem;
+}
+.workout-weeks { font-size:11px; color:var(--gray); letter-spacing:.1em; text-transform:uppercase; margin-bottom:1rem; }
+.interval-block {
+  background:#0e0e0e; border-radius:6px; padding:1rem 1.25rem;
+  font-family:'Courier New',monospace; font-size:12.5px;
+  line-height:2; border-left:3px solid var(--red); margin:.75rem 0;
+}
+.interval-block .i-warm { color:#6ea8fe; }
+.interval-block .i-work { color:#f0a832; }
+.interval-block .i-easy { color:#6ee7b7; }
+.interval-block .i-cool { color:#93c5fd; }
+.interval-block .i-hard { color:#fca5a5; }
+.workout-tip { font-size:12px; color:var(--light); font-style:italic; margin-top:.75rem; padding-top:.75rem; border-top:1px solid var(--border); }
+
+/* ── STRATEGY CARDS ── */
+.strategy-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+.strategy-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.5rem; }
+.strategy-card h3 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:22px; text-transform:uppercase; margin-bottom:.25rem; display:flex; gap:.5rem; align-items:center;
+}
+.strategy-card.swim h3 { color:var(--swim); }
+.strategy-card.bike h3 { color:var(--bike); }
+.strategy-card.run h3  { color:var(--run);  }
+.strategy-card ul { list-style:none; margin-top:.75rem; }
+.strategy-card li { padding:.35rem 0; border-bottom:1px solid var(--border); font-size:13px; color:var(--light); display:flex; gap:.5rem; }
+.strategy-card li:last-child { border-bottom:none; }
+.strategy-card li::before { content:'▸'; color:var(--red); flex-shrink:0; }
+.km-table { width:100%; border-collapse:collapse; margin-top:.75rem; }
+.km-table td { padding:.4rem .5rem; font-size:12px; border-bottom:1px solid var(--border); }
+.km-table td:first-child { color:var(--gray); white-space:nowrap; }
+.km-table td:last-child { color:var(--z2); font-weight:600; }
+
+/* ── NUTRITION ── */
+.nutrition-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+.nutrition-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.nutrition-card h4 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:18px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.75rem;
+  padding-bottom:.5rem; border-bottom:1px solid var(--border);
+}
+.nutrition-card .swim-nut { color:var(--swim); }
+.nutrition-card .bike-nut { color:var(--bike); }
+.nutrition-card .run-nut  { color:var(--run); }
+.nutrition-card ul { list-style:none; }
+.nutrition-card li { font-size:13px; color:var(--light); padding:.3rem 0; border-bottom:1px solid var(--border); }
+.nutrition-card li:last-child { border-bottom:none; }
+.nut-key { font-weight:600; color:var(--white); margin-right:.25rem; }
+.warning-box {
+  background:rgba(234,179,8,.08); border:1px solid rgba(234,179,8,.3);
+  border-radius:8px; padding:1rem 1.25rem; margin-top:1rem;
+  font-size:13px; color:#fde68a;
+}
+.warning-box strong { display:block; margin-bottom:.3rem; font-family:'Barlow Condensed',sans-serif; font-size:15px; letter-spacing:.08em; }
+
+/* ── GEAR CHECKLIST ── */
+.gear-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
+.gear-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.gear-card h4 {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:18px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.75rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.gear-progress { font-size:11px; color:var(--gray); font-family:'Inter',sans-serif; font-weight:400; letter-spacing:0; }
+.gear-item { display:flex; align-items:center; gap:.75rem; padding:.45rem 0; border-bottom:1px solid var(--border); }
+.gear-item:last-child { border-bottom:none; }
+.gear-item input[type=checkbox] { width:16px; height:16px; accent-color:var(--red); cursor:pointer; flex-shrink:0; }
+.gear-item label { font-size:13px; color:var(--light); cursor:pointer; transition:color .2s; }
+.gear-item input:checked + label { color:var(--gray); text-decoration:line-through; }
+
+/* ── TRAINING LOG ── */
+.log-week {
+  background:var(--card); border:1px solid var(--border); border-radius:8px;
+  margin-bottom:1rem; overflow:hidden;
+}
+.log-week-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1rem 1.25rem; cursor:pointer; user-select:none;
+}
+.log-week-header:hover { background:rgba(255,255,255,.02); }
+.log-week-title {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:18px; letter-spacing:.05em;
+}
+.log-week-meta { font-size:11px; color:var(--gray); margin-top:.1rem; }
+.log-week-bar { height:3px; background:var(--border); margin:0 1.25rem; position:relative; }
+.log-week-fill { height:100%; background:var(--red); width:0%; transition:width .4s; }
+.log-body { display:none; padding:0 1.25rem 1.25rem; }
+.log-body.open { display:block; }
+.log-table { width:100%; border-collapse:collapse; margin-top:1rem; }
+.log-table th {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--gray); padding:.5rem .5rem; text-align:left; border-bottom:1px solid var(--border);
+}
+.log-table td { padding:.55rem .5rem; border-bottom:1px solid var(--border); font-size:13px; }
+.log-table tr:last-child td { border-bottom:none; }
+.log-table input[type=checkbox] { accent-color:var(--red); width:15px; height:15px; cursor:pointer; }
+.log-table input[type=text] {
+  background:transparent; border:none; border-bottom:1px solid var(--border);
+  color:var(--white); font-family:'Inter',sans-serif; font-size:12px;
+  width:100%; padding:.2rem 0; outline:none;
+}
+.log-table input[type=text]:focus { border-bottom-color:var(--red); }
+.log-day-label { color:var(--gray); font-size:11px; }
+.log-planned { color:var(--light); }
+.log-reflection { margin-top:1rem; }
+.log-reflection textarea {
+  width:100%; background:var(--surface); border:1px solid var(--border);
+  border-radius:6px; color:var(--light); font-family:'Inter',sans-serif;
+  font-size:13px; padding:.75rem; resize:vertical; min-height:70px; outline:none;
+}
+.log-reflection textarea:focus { border-color:var(--red); }
+.log-reflection label { font-size:11px; color:var(--gray); letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:.4rem; margin-top:.75rem; }
+
+/* ── RACE WEEK TIMELINE ── */
+.timeline { position:relative; padding-left:2rem; }
+.timeline::before { content:''; position:absolute; left:6px; top:0; bottom:0; width:2px; background:var(--border); }
+.timeline-item { position:relative; padding:.75rem 0 .75rem 1.5rem; }
+.timeline-item::before { content:''; position:absolute; left:-1.65rem; top:1.1rem; width:10px; height:10px; border-radius:50%; background:var(--border); border:2px solid var(--surface); }
+.timeline-item.race::before { background:var(--red); width:14px; height:14px; left:-1.85rem; top:.9rem; }
+.timeline-date { font-size:11px; color:var(--gray); letter-spacing:.1em; text-transform:uppercase; }
+.timeline-text { font-size:14px; color:var(--light); margin-top:.2rem; }
+.timeline-item.race .timeline-text { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:22px; color:var(--red); text-transform:uppercase; letter-spacing:.05em; }
+
+/* ── INFO BOX ── */
+.info-box { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--red); border-radius:6px; padding:1rem 1.25rem; margin:1rem 0; font-size:13px; color:var(--light); }
+.info-box strong { color:var(--white); }
+
+/* ── FOOTER ── */
+footer {
+  text-align:center; padding:4rem 2rem;
+  background: radial-gradient(ellipse at 50% 100%, #1a0000 0%, #080808 60%);
+  border-top:1px solid var(--border);
+}
+footer .finish-line {
+  font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  font-size:clamp(24px,5vw,52px); text-transform:uppercase;
+  letter-spacing:.06em; color:var(--white); margin-bottom:.5rem;
+}
+footer .finish-line span { color:var(--red); }
+footer .finish-sub { font-size:13px; color:var(--gray); }
+
+/* ── UTIL ── */
+.red { color:var(--red); }
+.muted { color:var(--gray); font-size:12px; }
+.mt1 { margin-top:1rem; }
+.mt2 { margin-top:2rem; }
+.flex-gap { display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-start; }
+.pill {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px;
+  letter-spacing:.1em; text-transform:uppercase; padding:.25em .7em; border-radius:3px;
+  background:var(--red-dim); color:var(--red-bright); border:1px solid rgba(204,0,0,.3);
+}
+
+@media(max-width:640px) {
+  .splits-grid { grid-template-columns:repeat(3,1fr); }
+  .profile-grid { grid-template-columns:1fr; }
+  nav a { font-size:10px; padding:0 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">M⬛ KENTING 70.3</span>
+  <a href="#hero">Home</a>
+  <a href="#splits">Splits</a>
+  <a href="#zones">Zones</a>
+  <a href="#phases">Phases</a>
+  <a href="#trainer">Trainer</a>
+  <a href="#strategy">Strategy</a>
+  <a href="#nutrition">Nutrition</a>
+  <a href="#gear">Gear</a>
+  <a href="#log">Log</a>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <p class="hero-label">Ironman 70.3 · Kenting, Taiwan · November 1, 2026</p>
+  <h1 class="hero-title">Danish<br><span>Eddie</span></h1>
+  <p class="hero-sub">26 Weeks to Glory</p>
+  <div class="disciplines">
+    <span class="disc swim"><span class="disc-icon">🏊</span> 1.9 km</span>
+    <span class="disc bike"><span class="disc-icon">🚴</span> 90 km</span>
+    <span class="disc run"><span class="disc-icon">🏃</span> 21.1 km</span>
+  </div>
+  <div class="countdown" id="countdown">
+    <div class="cd-block"><span class="cd-num" id="cd-days">—</span><p class="cd-label">Days</p></div>
+    <div class="cd-block"><span class="cd-num" id="cd-hours">—</span><p class="cd-label">Hours</p></div>
+    <div class="cd-block"><span class="cd-num" id="cd-mins">—</span><p class="cd-label">Minutes</p></div>
+    <div class="cd-block"><span class="cd-num" id="cd-secs">—</span><p class="cd-label">Seconds</p></div>
+  </div>
+  <span class="goal-tag">🎯 TARGET: SUB-6 HOURS</span>
+</div>
+
+<!-- SPLITS -->
+<section id="splits">
+  <p class="section-label">Race Day Battle Plan</p>
+  <h2 class="section-title">Target Splits</h2>
+  <p class="section-sub">Hit these and you're crossing the finish line in 5:45, with 15 minutes to spare.</p>
+  <div class="splits-grid">
+    <div class="split-card swim">
+      <div class="split-icon">🏊</div>
+      <div class="split-name">Swim</div>
+      <div class="split-dist">1.9 km</div>
+      <div class="split-time">0:43</div>
+      <div class="split-pace">2:15 / 100m</div>
+    </div>
+    <div class="split-card t1">
+      <div class="split-icon">👟</div>
+      <div class="split-name">T1</div>
+      <div class="split-dist">Transition</div>
+      <div class="split-time">0:04</div>
+      <div class="split-pace">Wetsuit strip</div>
+    </div>
+    <div class="split-card bike">
+      <div class="split-icon">🚴</div>
+      <div class="split-name">Bike</div>
+      <div class="split-dist">90 km</div>
+      <div class="split-time">2:48</div>
+      <div class="split-pace">32 km/h avg</div>
+    </div>
+    <div class="split-card t2">
+      <div class="split-icon">👟</div>
+      <div class="split-name">T2</div>
+      <div class="split-dist">Transition</div>
+      <div class="split-time">0:03</div>
+      <div class="split-pace">Rack + shoes</div>
+    </div>
+    <div class="split-card run">
+      <div class="split-icon">🏃</div>
+      <div class="split-name">Run</div>
+      <div class="split-dist">21.1 km</div>
+      <div class="split-time">2:07</div>
+      <div class="split-pace">6:00 / km</div>
+    </div>
+    <div class="split-card total">
+      <div class="split-icon">🏁</div>
+      <div class="split-name">Finish</div>
+      <div class="split-dist">+15 min buffer</div>
+      <div class="split-time">5:45</div>
+      <div class="split-pace">Sub-6 target</div>
+    </div>
+  </div>
+  <div class="info-box">
+    <strong>⚡ The Bike is Your Battleground.</strong> At 90 km it's 47% of your total race time. Every Tuesday on the trainer is a direct deposit toward that 2:48 bike split.
+  </div>
+
+  <hr class="divider" style="margin-top:2.5rem">
+  <h3 class="section-title mt2" style="font-size:26px">Athlete Profile</h3>
+  <div class="profile-grid mt1">
+    <div class="profile-card">
+      <h4>Current vs Target</h4>
+      <div class="profile-row"><span>🏊 Swim pace</span><span class="now">2:15–2:30/100m</span></div>
+      <div class="profile-row"><span>🚴 Bike</span><span class="now">Casual 1–2×/wk</span></div>
+      <div class="profile-row"><span>🏃 Run</span><span class="now">20–40 km/wk</span></div>
+      <div class="profile-row"><span>Weekly hours</span><span class="now">6–8 hrs</span></div>
+    </div>
+    <div class="profile-card">
+      <h4>Race Day Requirements</h4>
+      <div class="profile-row"><span>🏊 Swim pace</span><span class="target">2:10–2:15/100m</span></div>
+      <div class="profile-row"><span>🚴 Bike</span><span class="target">90 km @ 32 km/h</span></div>
+      <div class="profile-row"><span>🏃 Run</span><span class="target">Half marathon ~2:05</span></div>
+      <div class="profile-row"><span>Weekly hours</span><span class="target">6–8 hrs (peak 8–9)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ZONES -->
+<section id="zones" style="padding-top:0">
+  <p class="section-label">Training Zones</p>
+  <h2 class="section-title">Heart Rate Zones</h2>
+  <p class="section-sub">80% of training should be Z2. 20% quality work. This ratio builds champions.</p>
+  <table class="zone-table">
+    <thead>
+      <tr>
+        <th>Zone</th><th>Name</th><th>% Max HR</th><th>RPE</th><th>The Feel</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="zone-badge" style="background:rgba(59,130,246,.15);color:var(--z1)">Z1</span></td>
+        <td><span class="zone-dot" style="background:var(--z1)"></span>Recovery</td>
+        <td>&lt; 68%</td><td>1–2</td>
+        <td style="color:var(--gray)">Stroll in the park</td>
+      </tr>
+      <tr>
+        <td><span class="zone-badge" style="background:rgba(34,197,94,.15);color:var(--z2)">Z2</span></td>
+        <td><span class="zone-dot" style="background:var(--z2)"></span>Aerobic</td>
+        <td>68–75%</td><td>3–4</td>
+        <td style="color:var(--gray)">Full conversation, all day long</td>
+      </tr>
+      <tr>
+        <td><span class="zone-badge" style="background:rgba(234,179,8,.15);color:var(--z3)">Z3</span></td>
+        <td><span class="zone-dot" style="background:var(--z3)"></span>Tempo</td>
+        <td>76–82%</td><td>5–6</td>
+        <td style="color:var(--gray)">Sentences only — comfortably hard</td>
+      </tr>
+      <tr>
+        <td><span class="zone-badge" style="background:rgba(249,115,22,.15);color:var(--z4)">Z4</span></td>
+        <td><span class="zone-dot" style="background:var(--z4)"></span>Threshold</td>
+        <td>83–89%</td><td>7–8</td>
+        <td style="color:var(--gray)">One or two words — lungs burning</td>
+      </tr>
+      <tr>
+        <td><span class="zone-badge" style="background:rgba(239,68,68,.15);color:var(--z5)">Z5</span></td>
+        <td><span class="zone-dot" style="background:var(--z5)"></span>VO2 Max</td>
+        <td>90–100%</td><td>9–10</td>
+        <td style="color:var(--gray)">Nothing. Just survive.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- PHASES -->
+<section id="phases" style="padding-top:0">
+  <p class="section-label">26-Week Programme</p>
+  <h2 class="section-title">Training Phases</h2>
+  <p class="section-sub">Click any phase to expand the weekly schedule.</p>
+
+  <!-- PHASE 1 -->
+  <div class="phase-card phase1">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">01</div>
+      <div class="phase-meta">
+        <h3>The Foundation</h3>
+        <p class="dates">Weeks 1–8 · May 11 – July 5, 2026</p>
+        <p class="desc">Build the aerobic engine. All Z2. Every session feels almost too easy — that's the point.</p>
+      </div>
+      <span class="phase-toggle">▾</span>
+    </div>
+    <div class="phase-body">
+      <table class="data-table">
+        <thead><tr><th>Wk</th><th>Mon 🏃</th><th>Tue 🚴 Indoor</th><th>Wed 🏃</th><th>Sat 🚴 Long</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><span class="week-badge">W1</span></td><td>40 min easy</td><td class="tag-bike">BASE-1 (60 min)</td><td>35 min easy</td><td class="tag-bike">90 min Z2</td><td class="muted">Assessment week</td></tr>
+          <tr><td><span class="week-badge">W2</span></td><td>45 min easy</td><td class="tag-bike">BASE-1 (65 min)</td><td>40 min easy</td><td class="tag-bike">1:45 Z2</td><td></td></tr>
+          <tr><td><span class="week-badge">W3</span></td><td>45 min easy</td><td class="tag-bike">BASE-1 (70 min)</td><td>40 min easy</td><td class="tag-bike">2:00 Z2</td><td></td></tr>
+          <tr class="recovery"><td><span class="week-badge">W4</span></td><td>35 min easy</td><td class="tag-bike">BASE-3 spin</td><td>30 min easy</td><td class="tag-bike">75 min Z2</td><td><span class="rec-badge">⚡ RECOVERY</span></td></tr>
+          <tr><td><span class="week-badge">W5</span></td><td>50 min + strides</td><td class="tag-bike">BASE-2 (75 min)</td><td>45 min easy</td><td class="tag-bike">2:00 Z2</td><td class="muted">Add 4×20s strides</td></tr>
+          <tr><td><span class="week-badge">W6</span></td><td>50 min + strides</td><td class="tag-bike">BASE-2 (75 min)</td><td>45 min easy</td><td class="tag-bike">2:15 Z2</td><td></td></tr>
+          <tr><td><span class="week-badge">W7</span></td><td>55 min + strides</td><td class="tag-bike">BASE-2 (80 min)</td><td>50 min easy</td><td class="tag-bike">2:30 Z2</td><td></td></tr>
+          <tr class="recovery"><td><span class="week-badge">W8</span></td><td>40 min easy</td><td class="tag-bike">BASE-3 spin</td><td>35 min easy</td><td class="tag-bike">90 min Z2</td><td><span class="rec-badge">⚡ RECOVERY</span></td></tr>
+        </tbody>
+      </table>
+      <div class="info-box mt1"><strong>Phase 1 Graduation:</strong> Comfortable 2–2.5 hr ride without fatigue · 45–55 min easy run controlled · Consistent bilateral breathing in swim coaching</div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-card phase2">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">02</div>
+      <div class="phase-meta">
+        <h3>The Forge</h3>
+        <p class="dates">Weeks 9–16 · July 6 – August 30, 2026</p>
+        <p class="desc">First bricks. FTP intervals. Tempo runs. Welcome to uncomfortable.</p>
+      </div>
+      <span class="phase-toggle">▾</span>
+    </div>
+    <div class="phase-body">
+      <table class="data-table">
+        <thead><tr><th>Wk</th><th>Mon 🏃</th><th>Tue 🚴 Indoor</th><th>Wed 🏃</th><th>Sat 🧱 Brick</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><span class="week-badge">W9</span></td><td>50 min + strides</td><td class="tag-bike">BUILD-1 (75 min)</td><td>50 min easy</td><td class="tag-brick">2:00 bike + 15 min run</td><td class="muted" style="color:#a78bfa">🧱 First Brick!</td></tr>
+          <tr><td><span class="week-badge">W10</span></td><td>55 min + strides</td><td class="tag-bike">BUILD-1 (75 min)</td><td>50 min Z2/3</td><td class="tag-brick">2:15 bike + 20 min run</td><td></td></tr>
+          <tr><td><span class="week-badge">W11</span></td><td>55 min easy</td><td class="tag-bike">BUILD-2 (80 min)</td><td>55 min tempo</td><td class="tag-brick">2:30 bike + 20 min run</td><td></td></tr>
+          <tr class="recovery"><td><span class="week-badge">W12</span></td><td>40 min easy</td><td class="tag-bike">BUILD-4 spin</td><td>35 min easy</td><td class="tag-bike">90 min easy</td><td><span class="rec-badge">⚡ RECOVERY</span></td></tr>
+          <tr><td><span class="week-badge">W13</span></td><td>55 min + strides</td><td class="tag-bike">BUILD-2 (80 min)</td><td>55 min tempo</td><td class="tag-brick">2:30 bike + 25 min run</td><td></td></tr>
+          <tr><td><span class="week-badge">W14</span></td><td>60 min easy</td><td class="tag-bike">BUILD-3 (85 min)</td><td>60 min steady</td><td class="tag-brick">2:45 bike + 25 min run</td><td class="muted">Longest brick yet</td></tr>
+          <tr><td><span class="week-badge">W15</span></td><td>60 min + strides</td><td class="tag-bike">BUILD-3 (85 min)</td><td>60 min tempo</td><td class="tag-brick">2:45 bike + 30 min run</td><td></td></tr>
+          <tr class="recovery"><td><span class="week-badge">W16</span></td><td>40 min easy</td><td class="tag-bike">BUILD-4 spin</td><td>35 min easy</td><td class="tag-bike">90 min easy</td><td><span class="rec-badge">⚡ RECOVERY</span></td></tr>
+        </tbody>
+      </table>
+      <div class="info-box mt1"><strong>Phase 2 Graduation:</strong> 2:45 bike + 30 min run brick · ~30 km/h avg on flat 60–70 km · 10km tempo in 55–58 min · 1.9km continuous swim</div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-card phase3">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">03</div>
+      <div class="phase-meta">
+        <h3>The Summit</h3>
+        <p class="dates">Weeks 17–22 · August 31 – October 11, 2026</p>
+        <p class="desc">Peak volume. Race simulation. The hardest weeks — then you taper.</p>
+      </div>
+      <span class="phase-toggle">▾</span>
+    </div>
+    <div class="phase-body">
+      <table class="data-table">
+        <thead><tr><th>Wk</th><th>Mon 🏃</th><th>Tue 🚴 Indoor</th><th>Wed 🏃</th><th>Sat Session</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><span class="week-badge">W17</span></td><td>60 min + strides</td><td class="tag-bike">PEAK-1 (90 min)</td><td>65 min steady</td><td class="tag-brick">2:45 bike + 30 min run</td><td></td></tr>
+          <tr><td><span class="week-badge">W18</span></td><td>60 min (20 min race pace)</td><td class="tag-bike">PEAK-2 (90 min)</td><td>70 min steady</td><td class="tag-brick">3:00 bike + 35 min run</td><td class="muted">📈 Peak volume</td></tr>
+          <tr><td><span class="week-badge">W19</span></td><td>65 min (25 min race pace)</td><td class="tag-bike">PEAK-2 (90 min)</td><td>70 min steady</td><td class="tag-brick">3:00 bike + 35 min run</td><td class="muted">📈 Peak volume</td></tr>
+          <tr class="recovery"><td><span class="week-badge">W20</span></td><td>40 min easy</td><td class="tag-bike">PEAK-3 (50 min)</td><td>35 min easy</td><td style="color:var(--red);font-weight:700">🎯 RACE SIM</td><td><span class="rec-badge">⚡ RECOVERY + SIM</span></td></tr>
+          <tr><td><span class="week-badge">W21</span></td><td>60 min (20 min race pace)</td><td class="tag-bike">PEAK-4 (85 min)</td><td>65 min steady</td><td class="tag-brick">2:45 bike + 30 min run</td><td class="muted">Final big block</td></tr>
+          <tr><td><span class="week-badge">W22</span></td><td>55 min easy</td><td class="tag-bike">PEAK-5 (75 min)</td><td>55 min easy</td><td class="tag-brick">2:00 bike + 20 min run</td><td class="muted">Taper begins ↓</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box mt1" style="border-left-color:var(--red)"><strong>🎯 Race Simulation — Week 20 Saturday:</strong> 1.9km continuous swim (Sun coaching) · 60–70km at race pace · 10–12km immediately after at 6:00/km · Use race nutrition and kit. <em>Most important training day of the plan.</em></div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-card phase4">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">04</div>
+      <div class="phase-meta">
+        <h3>The Approach</h3>
+        <p class="dates">Weeks 23–25 · October 12–25, 2026</p>
+        <p class="desc">Taper. Volume drops. Intensity stays. Trust the process — feeling flat is normal.</p>
+      </div>
+      <span class="phase-toggle">▾</span>
+    </div>
+    <div class="phase-body">
+      <table class="data-table">
+        <thead><tr><th>Wk</th><th>Mon 🏃</th><th>Tue 🚴 Indoor</th><th>Wed 🏃</th><th>Sat</th><th>Volume</th></tr></thead>
+        <tbody>
+          <tr><td><span class="week-badge">W23</span></td><td>50 min (10 min race pace)</td><td class="tag-bike">TAPER-1 (70 min)</td><td>50 min easy</td><td class="tag-brick">1:45 Z2 + 15 min run</td><td class="muted">−25%</td></tr>
+          <tr><td><span class="week-badge">W24</span></td><td>40 min (10 min race pace)</td><td class="tag-bike">TAPER-2 (60 min)</td><td>40 min easy</td><td class="tag-bike">60 min easy</td><td class="muted">−40%</td></tr>
+          <tr><td><span class="week-badge">W25</span></td><td>30 min + 4×strides</td><td class="tag-bike">TAPER-3 (45 min)</td><td>25 min easy</td><td class="tag-bike">45 min easy</td><td class="muted">−50%</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box mt1" style="border-left-color:var(--z2)"><strong>Taper Rule:</strong> You will feel flat, heavy, and out of shape. This is your body consolidating 22 weeks of adaptation. Do not add extra sessions. Rest is training.</div>
+    </div>
+  </div>
+
+  <!-- RACE WEEK -->
+  <div class="phase-card" style="border-color:rgba(204,0,0,.4)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num" style="color:var(--red)">🏁</div>
+      <div class="phase-meta">
+        <h3 style="color:var(--red)">Race Week</h3>
+        <p class="dates">Week 26 · October 26 – November 1, 2026</p>
+        <p class="desc">Stay off your feet. Sleep. Eat familiar food. Show up ready.</p>
+      </div>
+      <span class="phase-toggle">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="timeline">
+        <div class="timeline-item"><p class="timeline-date">Mon Oct 26</p><p class="timeline-text">25 min easy run + 4×20s strides</p></div>
+        <div class="timeline-item"><p class="timeline-date">Tue Oct 27</p><p class="timeline-text">30 min easy bike + 4×1 min race-pace run</p></div>
+        <div class="timeline-item"><p class="timeline-date">Wed Oct 28</p><p class="timeline-text">Travel / Rest — 20 min walk if needed</p></div>
+        <div class="timeline-item"><p class="timeline-date">Thu Oct 29</p><p class="timeline-text">20 min easy swim (open water if possible) + 20 min easy run</p></div>
+        <div class="timeline-item"><p class="timeline-date">Fri Oct 30</p><p class="timeline-text">Course recon: 30 min easy bike on race course + 10 min run</p></div>
+        <div class="timeline-item"><p class="timeline-date">Sat Oct 31</p><p class="timeline-text">Bike rack + kit check · 10 min easy swim at venue</p></div>
+        <div class="timeline-item race"><p class="timeline-date">Sun Nov 1</p><p class="timeline-text">RACE DAY — Ironman 70.3 Kenting 🏁</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDOOR TRAINER -->
+<section id="trainer">
+  <p class="section-label">Tuesday Sessions</p>
+  <h2 class="section-title">Indoor Trainer Workouts</h2>
+  <p class="section-sub">Every Tuesday on the trainer. These sessions build your 32 km/h race pace bike leg.</p>
+
+  <div class="trainer-tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'t-base')">Phase 1 — Base</button>
+    <button class="tab-btn" onclick="switchTab(this,'t-build')">Phase 2 — Build</button>
+    <button class="tab-btn" onclick="switchTab(this,'t-peak')">Phase 3 — Peak</button>
+    <button class="tab-btn" onclick="switchTab(this,'t-taper')">Phase 4 — Taper</button>
+  </div>
+
+  <div id="t-base" class="tab-panel active">
+    <div class="workout-card">
+      <h4>BASE-1 — Steady Endurance</h4>
+      <p class="workout-weeks">Weeks 1, 2, 3 · 60–70 min total</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min  — Warm-up Z1 → Z2 (easy spin, find your legs)</span><br>
+        <span class="i-easy">▸ 40–50 min — Steady Z2 (conversational pace, full sentences)</span><br>
+        <span class="i-cool">▸ 10 min  — Cool-down Z1</span>
+      </div>
+      <p class="workout-tip">Focus on pedal stroke smoothness. Cadence: 88–92 rpm. Should never creep above Z2 — if it does, ease off. These feel "too easy." That's correct.</p>
+    </div>
+    <div class="workout-card">
+      <h4>BASE-2 — Endurance + Cadence Drills</h4>
+      <p class="workout-weeks">Weeks 5, 6, 7 · 75–80 min total</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min — Warm-up Z1 → Z2</span><br>
+        <span class="i-work">▸  5 min — HIGH CADENCE DRILL @ 100+ rpm, Z2</span><br>
+        <span class="i-easy">▸  5 min — Normal cadence Z2 (recover)</span><br>
+        <span class="i-work">▸  5 min — HIGH CADENCE DRILL @ 100+ rpm, Z2</span><br>
+        <span class="i-easy">▸  5 min — Normal cadence Z2 (recover)</span><br>
+        <span class="i-easy">▸ 25–30 min — Steady Z2</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+      <p class="workout-tip">Fast legs off the bike are trained, not natural. Spinning at 100+ rpm now means your legs switch to run mode faster on race day.</p>
+    </div>
+    <div class="workout-card">
+      <h4>BASE-3 — Recovery Spin</h4>
+      <p class="workout-weeks">Weeks 4, 8 (Recovery weeks) · 45–50 min</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min — Warm-up Z1</span><br>
+        <span class="i-easy">▸ 30 min — Easy Z1–Z2 (easy gear, no effort, conversational)</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+      <p class="workout-tip">This is not a junk session. Active recovery accelerates adaptation. Go easy and mean it.</p>
+    </div>
+  </div>
+
+  <div id="t-build" class="tab-panel">
+    <div class="workout-card">
+      <h4>BUILD-1 — Tempo Blocks</h4>
+      <p class="workout-weeks">Weeks 9, 10 · 75 min total</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2 (include 3×30s spin-ups to 100 rpm)</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3 (comfortably hard)</span><br>
+        <span class="i-easy">▸  5 min — Easy Z1–Z2</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3</span><br>
+        <span class="i-cool">▸ 15 min — Cool-down Z1–Z2</span>
+      </div>
+      <p class="workout-tip">Z3 should be genuinely challenging. You can speak but choose not to. If chatting easily, go harder.</p>
+    </div>
+    <div class="workout-card">
+      <h4>BUILD-2 — Extended Tempo (3 Blocks)</h4>
+      <p class="workout-weeks">Weeks 11, 13 · 80 min total</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3</span><br>
+        <span class="i-easy">▸  4 min — Easy Z1 (short recovery)</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3</span><br>
+        <span class="i-easy">▸  4 min — Easy Z1</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3  ← 30 min total Z3 today</span><br>
+        <span class="i-cool">▸ 15 min — Cool-down Z1–Z2</span>
+      </div>
+      <p class="workout-tip">If HR spikes into Z4 in the third block, back off slightly — you want sustained Z3, not a sprint.</p>
+    </div>
+    <div class="workout-card">
+      <h4>BUILD-3 — Sweet Spot</h4>
+      <p class="workout-weeks">Weeks 14, 15 · 85 min total</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸ 15 min — SWEET SPOT (upper Z3 / lower Z4)</span><br>
+        <span class="i-easy">▸  5 min — Easy Z1–Z2</span><br>
+        <span class="i-work">▸ 15 min — SWEET SPOT ← most race-specific effort in the plan</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1–Z2</span>
+      </div>
+      <p class="workout-tip">Sweet spot (~88–93% FTP) is the effort you'll hold for most of the 90 km bike. 30 min here builds the ability to sustain it for nearly 3 hours.</p>
+    </div>
+    <div class="workout-card">
+      <h4>BUILD-4 — Recovery Spin</h4>
+      <p class="workout-weeks">Weeks 12, 16 (Recovery weeks) · 50 min</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min — Warm-up Z1</span><br>
+        <span class="i-easy">▸ 30 min — Easy Z1–Z2 (deliberate rest)</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="t-peak" class="tab-panel">
+    <div class="workout-card" style="border-color:rgba(239,68,68,.3)">
+      <h4>PEAK-1 — Over-Unders</h4>
+      <p class="workout-weeks">Week 17 · 90 min total</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <br>
+        <span style="color:var(--gray)">── REPEAT 3 TIMES ──────────────────────</span><br>
+        <span class="i-easy">│  6 min — UNDER @ Z3 (below threshold)     │</span><br>
+        <span class="i-hard">│  3 min — OVER  @ Z4 (above threshold)     │</span><br>
+        <span class="i-easy">│  3 min — Easy Z1–Z2 (partial recovery)    │</span><br>
+        <span style="color:var(--gray)">─────────────────────────────────────────</span><br>
+        <br>
+        <span class="i-cool">▸ 15 min — Cool-down Z1</span>
+      </div>
+      <p class="workout-tip">At km 60–80 of the Kenting bike course you'll hit fatigue and possibly a climb. This trains you to push through accumulated lactate — exactly what separates sub-6 athletes from those who blow up.</p>
+    </div>
+    <div class="workout-card" style="border-color:rgba(239,68,68,.5)">
+      <h4>PEAK-2 — Threshold Repeats ⚠️</h4>
+      <p class="workout-weeks">Weeks 18, 19 · 90 min total · Hardest session of the plan</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <br>
+        <span class="i-hard">▸ 20 min — THRESHOLD @ Z3–Z4</span><br>
+        <span style="color:var(--gray)">              Hard but sustainable. Even effort. Don't go</span><br>
+        <span style="color:var(--gray)">              out too hard in the first 5 min.</span><br>
+        <br>
+        <span class="i-easy">▸  5 min — Easy Z1 (you earned it)</span><br>
+        <br>
+        <span class="i-hard">▸ 20 min — THRESHOLD @ Z3–Z4</span><br>
+        <span style="color:var(--gray)">              Same effort as first block. ← 40 min total today</span><br>
+        <br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1–Z2</span>
+      </div>
+      <p class="workout-tip">If you complete both PEAK-2 sessions, you have the bike fitness to hit sub-6. Hold even pace throughout — the second block should feel as hard as the first, not harder.</p>
+    </div>
+    <div class="workout-card">
+      <h4>PEAK-3 — Race Pace Maintenance</h4>
+      <p class="workout-weeks">Week 20 (Race Sim week) · 50 min</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸ 30 min — RACE PACE @ Z3 (controlled, sustainable — this is what 90 km feels like)</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+    </div>
+    <div class="workout-card">
+      <h4>PEAK-4 — Strength + Tempo</h4>
+      <p class="workout-weeks">Week 21 · 85 min</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3 (normal cadence 88–92 rpm)</span><br>
+        <span class="i-easy">▸  5 min — Easy Z1</span><br>
+        <span class="i-hard">▸ 10 min — LOW CADENCE STRENGTH @ Z3 (70–75 rpm, harder gear)</span><br>
+        <span style="color:var(--gray)">              Builds leg strength for Kenting hills</span><br>
+        <span class="i-easy">▸  5 min — Easy Z1</span><br>
+        <span class="i-work">▸ 10 min — TEMPO @ Z3 (normal cadence)</span><br>
+        <span class="i-cool">▸ 15 min — Cool-down Z1–Z2</span>
+      </div>
+    </div>
+    <div class="workout-card">
+      <h4>PEAK-5 — Easy Spin (Taper begins)</h4>
+      <p class="workout-weeks">Week 22 · 75 min</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min — Warm-up Z1</span><br>
+        <span class="i-easy">▸ 55 min — Easy Z1–Z2. Enjoy it. The hard work is done.</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="t-taper" class="tab-panel">
+    <div class="workout-card">
+      <h4>TAPER-1</h4>
+      <p class="workout-weeks">Week 23 · 70 min · −25% volume</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸ 10 min — Z3 tempo</span><br>
+        <span class="i-easy">▸  5 min — Easy Z1</span><br>
+        <span class="i-work">▸ 10 min — Z3 tempo</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+    </div>
+    <div class="workout-card">
+      <h4>TAPER-2</h4>
+      <p class="workout-weeks">Week 24 · 60 min · −40% volume</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 15 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸  8 min — Z3 tempo</span><br>
+        <span class="i-easy">▸  5 min — Easy Z1</span><br>
+        <span class="i-work">▸  8 min — Z3 tempo</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+    </div>
+    <div class="workout-card">
+      <h4>TAPER-3</h4>
+      <p class="workout-weeks">Week 25 · 45 min · −50% volume · One week to go</p>
+      <div class="interval-block">
+        <span class="i-warm">▸ 10 min — Warm-up Z1→Z2</span><br>
+        <span class="i-work">▸  4 min — Z3 (feel crisp, not tired)</span><br>
+        <span class="i-easy">▸  3 min — Easy Z1</span><br>
+        <span class="i-work">▸  4 min — Z3</span><br>
+        <span class="i-easy">▸  3 min — Easy Z1</span><br>
+        <span class="i-work">▸  4 min — Z3</span><br>
+        <span class="i-cool">▸ 10 min — Cool-down Z1</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RACE STRATEGY -->
+<section id="strategy" style="padding-top:0">
+  <p class="section-label">Execution</p>
+  <h2 class="section-title">Race Strategy</h2>
+  <p class="section-sub">Discipline-by-discipline execution plan for November 1st.</p>
+  <div class="strategy-grid">
+    <div class="strategy-card swim">
+      <h3>🏊 Swim</h3>
+      <ul>
+        <li>Seed yourself wide if unsure of pace — avoid the washing machine start</li>
+        <li>Sight every 8–10 strokes — Kenting ocean may have chop</li>
+        <li>First 300m will be chaotic. Stay calm. Find space.</li>
+        <li>Wetsuit check: water temp ~26–27°C — verify rules close to race day</li>
+        <li>Practise open water sighting from Week 14 in coaching sessions</li>
+      </ul>
+    </div>
+    <div class="strategy-card bike">
+      <h3>🚴 Bike</h3>
+      <table class="km-table">
+        <tr><td>Km 0–15</td><td>Settle in. HR in Z2–Z3. Hold back.</td></tr>
+        <tr><td>Km 15–60</td><td>Race pace. 31–33 km/h. Fuel every 20–25 min.</td></tr>
+        <tr><td>Km 60–80</td><td>Where most athletes blow up. Stay disciplined.</td></tr>
+        <tr><td>Km 80–90</td><td>Push. You've earned it. Run is coming.</td></tr>
+      </table>
+      <ul style="margin-top:.5rem">
+        <li>Rolling hills — Kenting is not flat. Stand on steep climbs to save legs.</li>
+        <li>Wind possible on exposed coastal sections</li>
+      </ul>
+    </div>
+    <div class="strategy-card run">
+      <h3>🏃 Run</h3>
+      <table class="km-table">
+        <tr><td>Km 0–5</td><td>6:10–6:20/km — conservative, legs adjusting</td></tr>
+        <tr><td>Km 5–15</td><td>5:55–6:00/km — race pace locked in</td></tr>
+        <tr><td>Km 15–21</td><td>5:45–5:55/km — push if feeling good</td></tr>
+      </table>
+      <ul style="margin-top:.5rem">
+        <li>Walk aid stations — costs 15 secs, saves core temp</li>
+        <li>Pour cold water over yourself at EVERY aid station</li>
+        <li>28–32°C in Kenting. Heat management wins this leg.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- NUTRITION -->
+<section id="nutrition" style="padding-top:0">
+  <p class="section-label">Fuel</p>
+  <h2 class="section-title">Race Day Nutrition</h2>
+  <p class="section-sub">Test everything in training — especially in the Race Simulation (Week 20).</p>
+  <div class="nutrition-grid">
+    <div class="nutrition-card">
+      <h4>Night Before</h4>
+      <ul>
+        <li><span class="nut-key">Dinner:</span>Pasta or rice with lean protein</li>
+        <li><span class="nut-key">Avoid:</span>Heavy sauces, new foods, high fibre</li>
+        <li><span class="nut-key">Hydrate:</span>2–3 litres throughout the day</li>
+        <li><span class="nut-key">Sleep:</span>8+ hours — your secret weapon</li>
+      </ul>
+    </div>
+    <div class="nutrition-card">
+      <h4>Race Morning</h4>
+      <ul>
+        <li><span class="nut-key">3 hrs before:</span>Rice cakes / banana + PB / oats</li>
+        <li><span class="nut-key">Coffee:</span>Only if you normally drink it</li>
+        <li><span class="nut-key">Fluid:</span>500ml water + electrolytes</li>
+        <li><span class="nut-key">30 min out:</span>1 gel + water</li>
+      </ul>
+    </div>
+    <div class="nutrition-card">
+      <h4><span class="bike-nut">🚴 Bike (~2:48)</span></h4>
+      <ul>
+        <li><span class="nut-key">Carbs/hr:</span>60–80g (~280 cal/hr)</li>
+        <li><span class="nut-key">Every 20–25 min:</span>1 gel or half bar + water</li>
+        <li><span class="nut-key">Every 30 min:</span>300–400ml electrolyte/water</li>
+        <li><span class="nut-key">Total:</span>2 full bottles + aid station water</li>
+      </ul>
+    </div>
+    <div class="nutrition-card">
+      <h4><span class="run-nut">🏃 Run (~2:07)</span></h4>
+      <ul>
+        <li><span class="nut-key">Every 30–35 min:</span>1 gel (2–3 total)</li>
+        <li><span class="nut-key">Every aid station:</span>Water or cola</li>
+        <li><span class="nut-key">Walk aid stations:</span>Pour water on neck</li>
+        <li><span class="nut-key">Avoid:</span>Anything you haven't tested</li>
+      </ul>
+    </div>
+  </div>
+  <div class="warning-box">
+    <strong>🌡 Kenting Heat Protocol</strong>
+    November temps: 28–32°C, humid. Add 10–15 min to targets vs cooler conditions. Use electrolyte tablets — hyponatremia risk is real when drinking only water in heat. Ice towel on neck at T2. Pre-cool in transition if possible.
+  </div>
+</section>
+
+<!-- GEAR -->
+<section id="gear" style="padding-top:0">
+  <p class="section-label">Equipment</p>
+  <h2 class="section-title">Gear Checklist</h2>
+  <p class="section-sub">Check items off as you pack. Progress saves automatically.</p>
+  <div class="gear-grid">
+    <div class="gear-card">
+      <h4 style="color:var(--swim)">🏊 Swim <span class="gear-progress" id="prog-swim">0/5</span></h4>
+      <div class="gear-item"><input type="checkbox" id="g1" onchange="updateGear()"><label for="g1">Wetsuit (check water temp rules)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g2" onchange="updateGear()"><label for="g2">Goggles — primary pair</label></div>
+      <div class="gear-item"><input type="checkbox" id="g3" onchange="updateGear()"><label for="g3">Goggles — spare pair</label></div>
+      <div class="gear-item"><input type="checkbox" id="g4" onchange="updateGear()"><label for="g4">Anti-chafe cream (neck + underarms)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g5" onchange="updateGear()"><label for="g5">Earplugs (optional)</label></div>
+    </div>
+    <div class="gear-card">
+      <h4 style="color:var(--bike)">🚴 Bike <span class="gear-progress" id="prog-bike">0/8</span></h4>
+      <div class="gear-item"><input type="checkbox" id="g6" onchange="updateGear()"><label for="g6">Road / TT bike (TT = ~10–15 min saved)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g7" onchange="updateGear()"><label for="g7">Helmet (mandatory)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g8" onchange="updateGear()"><label for="g8">Cycling shoes</label></div>
+      <div class="gear-item"><input type="checkbox" id="g9" onchange="updateGear()"><label for="g9">2× water bottles (pre-filled)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g10" onchange="updateGear()"><label for="g10">Race nutrition (gels + bars)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g11" onchange="updateGear()"><label for="g11">Bike computer (speed + HR)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g12" onchange="updateGear()"><label for="g12">CO2 inflator + 2× spare tubes</label></div>
+      <div class="gear-item"><input type="checkbox" id="g13" onchange="updateGear()"><label for="g13">Sunscreen (apply before swim)</label></div>
+    </div>
+    <div class="gear-card">
+      <h4 style="color:var(--run)">🏃 Run <span class="gear-progress" id="prog-run">0/5</span></h4>
+      <div class="gear-item"><input type="checkbox" id="g14" onchange="updateGear()"><label for="g14">Tri / elastic-laced running shoes</label></div>
+      <div class="gear-item"><input type="checkbox" id="g15" onchange="updateGear()"><label for="g15">Race belt with number</label></div>
+      <div class="gear-item"><input type="checkbox" id="g16" onchange="updateGear()"><label for="g16">Cap or visor (Kenting sun is intense)</label></div>
+      <div class="gear-item"><input type="checkbox" id="g17" onchange="updateGear()"><label for="g17">Sunglasses</label></div>
+      <div class="gear-item"><input type="checkbox" id="g18" onchange="updateGear()"><label for="g18">2–3 extra gels in jersey pocket</label></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINING LOG -->
+<section id="log" style="padding-top:0">
+  <p class="section-label">Track Your Journey</p>
+  <h2 class="section-title">Training Log</h2>
+  <p class="section-sub">Log actual sessions, RPE, and notes. Everything saves automatically in your browser.</p>
+
+  <div id="log-weeks"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="finish-line">"You Are An <span>Ironman</span>."</p>
+  <p class="finish-sub">November 1, 2026 · Kenting, Taiwan · Danish Eddie · Sub-6:00</p>
+  <p class="finish-sub" style="margin-top:1rem; font-size:11px">Plan created May 2026 · 26-week programme</p>
+</footer>
+
+<script>
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const race = new Date('2026-11-01T06:00:00+08:00');
+  const now  = new Date();
+  const diff = race - now;
+  if (diff <= 0) {
+    document.getElementById('countdown').innerHTML = '<p style="font-family:Barlow Condensed,sans-serif;font-size:32px;font-weight:900;color:var(--red)">RACE DAY! YOU ARE AN IRONMAN.</p>';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000)  / 60000);
+  const s = Math.floor((diff % 60000)    / 1000);
+  document.getElementById('cd-days').textContent  = String(d).padStart(3,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ── NAV ACTIVE ──
+const sections = document.querySelectorAll('section[id], div[id="hero"]');
+const navLinks  = document.querySelectorAll('nav a');
+const observer  = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const match = document.querySelector(`nav a[href="#${e.target.id}"]`);
+      if (match) match.classList.add('active');
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('section[id], #hero').forEach(s => observer.observe(s));
+
+// ── PHASE TOGGLE ──
+function togglePhase(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ── TRAINER TABS ──
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ── GEAR CHECKLIST (localStorage) ──
+const gearIds = Array.from({length:18}, (_,i) => 'g'+(i+1));
+const gearGroups = { swim:[1,2,3,4,5], bike:[6,7,8,9,10,11,12,13], run:[14,15,16,17,18] };
+
+function loadGear() {
+  gearIds.forEach(id => {
+    const saved = localStorage.getItem('gear_'+id);
+    if (saved === 'true') document.getElementById(id).checked = true;
+  });
+  updateGear();
+}
+function updateGear() {
+  gearIds.forEach(id => localStorage.setItem('gear_'+id, document.getElementById(id).checked));
+  Object.entries(gearGroups).forEach(([group, ids]) => {
+    const checked = ids.filter(i => document.getElementById('g'+i).checked).length;
+    const el = document.getElementById('prog-'+group);
+    if (el) el.textContent = checked+'/'+ids.length;
+  });
+}
+loadGear();
+
+// ── TRAINING LOG (dynamic generation + localStorage) ──
+const LOG_WEEKS = [
+  { wk:1, phase:'Base', dates:'May 11–17, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'40 min easy run'},
+    {day:'Tue', icon:'🚴', plan:'BASE-1 (60 min)'},
+    {day:'Wed', icon:'🏃', plan:'35 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Rest / mobility'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'90 min Z2'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:2, phase:'Base', dates:'May 18–24, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'45 min easy run'},
+    {day:'Tue', icon:'🚴', plan:'BASE-1 (65 min)'},
+    {day:'Wed', icon:'🏃', plan:'40 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Rest / mobility'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'1:45 Z2 bike'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:3, phase:'Base', dates:'May 25–31, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'45 min easy run'},
+    {day:'Tue', icon:'🚴', plan:'BASE-1 (70 min)'},
+    {day:'Wed', icon:'🏃', plan:'40 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Rest / mobility'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'2:00 Z2 bike'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:4, phase:'Base ⚡ Recovery', dates:'Jun 1–7, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'35 min easy run'},
+    {day:'Tue', icon:'🚴', plan:'BASE-3 spin (45 min)'},
+    {day:'Wed', icon:'🏃', plan:'30 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Full rest'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'75 min Z2 bike'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:5, phase:'Base', dates:'Jun 8–14, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'50 min easy + 4×20s strides'},
+    {day:'Tue', icon:'🚴', plan:'BASE-2 (75 min)'},
+    {day:'Wed', icon:'🏃', plan:'45 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Rest / mobility'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'2:00 Z2 bike'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:6, phase:'Base', dates:'Jun 15–21, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'50 min easy + strides'},
+    {day:'Tue', icon:'🚴', plan:'BASE-2 (75 min)'},
+    {day:'Wed', icon:'🏃', plan:'45 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Rest / mobility'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'2:15 Z2 bike'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:7, phase:'Base', dates:'Jun 22–28, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'55 min easy + strides'},
+    {day:'Tue', icon:'🚴', plan:'BASE-2 (80 min)'},
+    {day:'Wed', icon:'🏃', plan:'50 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Rest / mobility'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'2:30 Z2 bike'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+  { wk:8, phase:'Base ⚡ Recovery', dates:'Jun 29 – Jul 5, 2026', sessions:[
+    {day:'Mon', icon:'🏃', plan:'40 min easy run'},
+    {day:'Tue', icon:'🚴', plan:'BASE-3 spin (50 min)'},
+    {day:'Wed', icon:'🏃', plan:'35 min easy run'},
+    {day:'Thu', icon:'😴', plan:'Full rest'},
+    {day:'Fri', icon:'🏊', plan:'Swim coaching 5–6pm'},
+    {day:'Sat', icon:'🚴', plan:'90 min Z2'},
+    {day:'Sun', icon:'🏊', plan:'Swim coaching 9am–12pm'},
+  ]},
+];
+
+function buildLog() {
+  const container = document.getElementById('log-weeks');
+  LOG_WEEKS.forEach(w => {
+    const id = 'week'+w.wk;
+    const rows = w.sessions.map(s => {
+      const cbId = `log_w${w.wk}_${s.day}`;
+      const cbChecked = localStorage.getItem(cbId) === 'true' ? 'checked' : '';
+      const noteVal = localStorage.getItem(cbId+'_note') || '';
+      return `<tr>
+        <td class="log-day-label">${s.icon} ${s.day}</td>
+        <td class="log-planned">${s.plan}</td>
+        <td style="text-align:center"><input type="checkbox" ${cbChecked} onchange="saveLog('${cbId}',this.checked)"></td>
+        <td><input type="text" value="${noteVal}" placeholder="RPE, distance, notes…" onchange="saveLog('${cbId}_note',this.value)"></td>
+      </tr>`;
+    }).join('');
+
+    const reflVal = localStorage.getItem('refl_w'+w.wk) || '';
+    const doneCount = w.sessions.filter(s => localStorage.getItem(`log_w${w.wk}_${s.day}`) === 'true').length;
+    const pct = Math.round(doneCount/w.sessions.length*100);
+
+    container.innerHTML += `
+    <div class="log-week">
+      <div class="log-week-header" onclick="toggleLogWeek('${id}')">
+        <div>
+          <div class="log-week-title">Week ${w.wk} <span style="color:var(--gray);font-size:13px;font-weight:400">— ${w.phase}</span></div>
+          <div class="log-week-meta">${w.dates} · ${doneCount}/${w.sessions.length} sessions logged</div>
+        </div>
+        <span style="color:var(--gray);font-size:14px">▾</span>
+      </div>
+      <div class="log-week-bar"><div class="log-week-fill" id="fill_w${w.wk}" style="width:${pct}%"></div></div>
+      <div class="log-body" id="${id}">
+        <table class="log-table">
+          <thead><tr><th>Day</th><th>Planned</th><th>Done</th><th>Notes</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="log-reflection">
+          <label>Weekly Reflection</label>
+          <textarea placeholder="What went well? What to carry into next week?" onchange="saveLog('refl_w${w.wk}',this.value)">${reflVal}</textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function toggleLogWeek(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function saveLog(key, val) {
+  localStorage.setItem(key, val);
+  // refresh progress bars
+  LOG_WEEKS.forEach(w => {
+    const doneCount = w.sessions.filter(s => localStorage.getItem(`log_w${w.wk}_${s.day}`) === 'true').length;
+    const pct = Math.round(doneCount/w.sessions.length*100);
+    const fill = document.getElementById('fill_w'+w.wk);
+    if (fill) fill.style.width = pct+'%';
+  });
+}
+
+buildLog();
+</script>
+</body>
+</html>
