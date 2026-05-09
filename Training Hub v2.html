@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Training Hub — Danish Eddie</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -457,6 +457,16 @@ svg{display:block;}
 .considerations-textarea{width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:13px;padding:10px 12px;outline:none;resize:vertical;min-height:80px;transition:border-color .18s;margin-top:4px;}
 .considerations-textarea:focus{border-color:var(--red);}
 .considerations-hint{font-size:11px;color:var(--t3);margin-top:5px;line-height:1.5;}
+/* ─── WIZARD GENERATING SCREEN ──────────────────────────────── */
+.wiz-generating{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px;gap:24px;min-height:220px;}
+.wiz-gen-icon{width:52px;height:52px;position:relative;}
+.wiz-gen-icon svg{width:52px;height:52px;}
+@keyframes spinRing{to{stroke-dashoffset:0}}
+.wiz-gen-ring{stroke-dasharray:130;stroke-dashoffset:130;animation:spinRing 2.4s ease forwards;}
+.wiz-gen-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--white);text-transform:uppercase;text-align:center;min-height:22px;transition:opacity .3s;}
+.wiz-gen-track{width:100%;max-width:280px;height:4px;background:var(--s3);border-radius:2px;overflow:hidden;}
+.wiz-gen-fill{height:100%;border-radius:2px;background:var(--red);width:0%;transition:width .4s ease;}
+
 .wiz-footer{padding:14px 26px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .wiz-step-lbl{font-size:11px;color:var(--t3);}
 .wiz-footer-btns{display:flex;gap:8px;}
@@ -2106,7 +2116,71 @@ function wizNext(){
     if(f.type==='opts'&&_wiz.data[f.id]==='other'){const ot=document.getElementById('owt_'+f.id);if(ot)_wiz.data[f.id+'_other']=ot.value.trim();}
   });
   if(_wiz.step<WIZ_STEPS.length-1){_wiz.step++;renderWizStep();}
-  else{const r=generatePlan(_wiz.data);DATA.races.push(r);save();closeWizard();renderSidebar();showHub();}
+  else{showGenerating();}
+}
+
+function showGenerating(){
+  // Hide footer buttons, replace body with loading screen
+  document.getElementById('btn-wiz-back').style.display='none';
+  document.getElementById('btn-wiz-next').style.display='none';
+  document.querySelector('.wiz-x').style.display='none';
+  document.getElementById('wiz-steps-row').style.display='none';
+  document.getElementById('wiz-title').textContent='Building Your Plan';
+  document.getElementById('wiz-subtitle').textContent='';
+  document.getElementById('wiz-step-lbl').textContent='';
+
+  const steps=[
+    {label:'Analysing your race goal…',pct:18},
+    {label:'Mapping training phases…',pct:42},
+    {label:'Building weekly schedule…',pct:68},
+    {label:'Personalising your plan…',pct:88},
+    {label:'Finishing up…',pct:100},
+  ];
+
+  document.getElementById('wiz-body').innerHTML=`
+    <div class="wiz-generating">
+      <div class="wiz-gen-icon">
+        <svg viewBox="0 0 52 52" fill="none">
+          <circle cx="26" cy="26" r="22" stroke="var(--s3)" stroke-width="4"/>
+          <circle cx="26" cy="26" r="22" stroke="var(--red)" stroke-width="4" stroke-linecap="round"
+            class="wiz-gen-ring" transform="rotate(-90 26 26)"/>
+          <path d="M18 24 L14 19 L22 19" stroke="#e53935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18 28 L14 23 L22 23" stroke="#e53935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
+        </svg>
+      </div>
+      <div class="wiz-gen-label" id="gen-label">${steps[0].label}</div>
+      <div class="wiz-gen-track"><div class="wiz-gen-fill" id="gen-fill"></div></div>
+    </div>`;
+
+  // Animate through steps
+  let i=0;
+  const fill=document.getElementById('gen-fill');
+  const lbl=document.getElementById('gen-label');
+  const intervals=[400,600,550,500,350];
+
+  function nextStep(){
+    if(!fill||!lbl)return;
+    fill.style.width=steps[i].pct+'%';
+    lbl.style.opacity='0';
+    setTimeout(()=>{if(lbl){lbl.textContent=steps[i].label;lbl.style.opacity='1';}},150);
+    i++;
+    if(i<steps.length){setTimeout(nextStep,intervals[i-1]);}
+    else{setTimeout(finishGenerate,500);}
+  }
+  setTimeout(nextStep,100);
+}
+
+function finishGenerate(){
+  const r=generatePlan(_wiz.data);
+  DATA.races.push(r);
+  save();
+  closeWizard();
+  // Reset wizard modal state for next time
+  ['btn-wiz-back','btn-wiz-next'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
+  const x=document.querySelector('.wiz-x');if(x)x.style.display='';
+  const sr=document.getElementById('wiz-steps-row');if(sr)sr.style.display='';
+  renderSidebar();
+  showHub();
 }
 
 // ─── PLAN GENERATOR ──────────────────────────────────────────────
