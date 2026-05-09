@@ -314,6 +314,46 @@ svg{display:block;}
 .log-refl textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);color:var(--t1);font-family:inherit;font-size:12px;padding:9px;resize:vertical;min-height:60px;outline:none;}
 .log-refl textarea:focus{border-color:var(--border2);}
 
+/* ─── SESSION STATUS (3-state: none → done → skipped) ────────── */
+/* Compact cycle button — used in Log tab rows */
+.status-btn{
+  width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);
+  background:transparent;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:all .18s;flex-shrink:0;padding:0;
+}
+.status-btn svg{width:12px;height:12px;display:block;}
+.status-btn:hover{border-color:var(--run);background:rgba(52,211,153,.08);}
+.status-btn.s-done{background:var(--run);border-color:var(--run);}
+.status-btn.s-done svg{color:#fff;}
+.status-btn.s-done:hover{filter:brightness(1.1);}
+.status-btn.s-skipped{background:rgba(251,191,36,.12);border-color:var(--bike);}
+.status-btn.s-skipped svg{color:var(--bike);}
+.status-btn.s-skipped:hover{filter:brightness(1.1);}
+/* Row-level treatment */
+.log-row.s-done .log-row-plan{color:var(--t2);}
+.log-row.s-skipped .log-row-plan{text-decoration:line-through;color:var(--t3);}
+.status-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-top:2px;}
+.status-label.s-done{color:var(--run);}
+.status-label.s-skipped{color:var(--bike);}
+/* Two-button row — used in Today tab */
+.today-action-btns{display:flex;gap:6px;flex-shrink:0;}
+.btn-mark-done,.btn-mark-skip{
+  border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:12px;letter-spacing:.06em;cursor:pointer;
+  padding:5px 12px;display:flex;align-items:center;gap:5px;
+  transition:all .18s;white-space:nowrap;
+}
+.btn-mark-done svg,.btn-mark-skip svg{width:12px;height:12px;}
+.btn-mark-done{background:rgba(52,211,153,.12);color:var(--run);border:1px solid rgba(52,211,153,.25);}
+.btn-mark-done.active{background:var(--run);color:#fff;border-color:var(--run);}
+.btn-mark-done:hover:not(.active){background:rgba(52,211,153,.2);}
+.btn-mark-skip{background:rgba(251,191,36,.1);color:var(--bike);border:1px solid rgba(251,191,36,.2);}
+.btn-mark-skip.active{background:var(--bike);color:#111;border-color:var(--bike);}
+.btn-mark-skip:hover:not(.active){background:rgba(251,191,36,.2);}
+/* Skipped session visual in today card */
+.today-session-name.s-skipped{text-decoration:line-through;color:var(--t3);}
+.today-session-name.s-done{color:var(--t2);}
+
 /* ─── GEAR TAB ───────────────────────────────────────────────── */
 .gear-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
 .gear-group{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
@@ -741,6 +781,7 @@ const IC={
   pencil:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
   check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
   target:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+  skip:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>`,
 };
 const ic=(name,sz=14)=>`<span style="display:inline-flex;align-items:center;vertical-align:middle;width:${sz}px;height:${sz}px">${IC[name]||''}</span>`;
 
@@ -1151,21 +1192,27 @@ function renderTabToday(r){
 
   if(todaySessions){
     const parts=todaySessions.split('+').map(p=>p.trim());
-    const isDone=logData[todayKey]?.done;
+    const todayStatus=getStatus(logData[todayKey]);
     const noteVal=(logData[todayKey]?.note||'').replace(/"/g,'&quot;');
     todayHtml=`
       <div class="today-card" style="border-color:var(--border2);grid-column:1/-1">
-        <h4 style="display:flex;justify-content:space-between;align-items:center">Today — ${todayKey} ${editBtn(todayKey)}</h4>
+        <h4 style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">Today — ${todayKey} ${editBtn(todayKey)}</h4>
         ${parts.map(p=>{
           const cls=sessColor(p);
-          return`<div class="today-session-row today-done">
-            <input type="checkbox" ${isDone?'checked':''} onchange="logSession('${r.id}','${wObj.weekNum}','${todayKey}','done',this.checked,'${logKey}')">
-            <div class="today-session-text">
-              <div class="today-session-name" style="${isDone?'text-decoration:line-through;color:var(--t3)':''}">${p}</div>
+          return`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <div class="today-session-text" style="flex:1">
+              <div class="today-session-name${todayStatus?' s-'+todayStatus:''}">${p}</div>
               <div class="today-session-type c-${cls}">${cls.charAt(0).toUpperCase()+cls.slice(1)}</div>
             </div>
           </div>`;
         }).join('')}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px;flex-wrap:wrap">
+          <div class="today-action-btns">
+            <button class="btn-mark-done${todayStatus==='done'?' active':''}" onclick="setStatus('${r.id}',${wObj.weekNum},'${todayKey}','done','${logKey}')">${IC.check} Done</button>
+            <button class="btn-mark-skip${todayStatus==='skipped'?' active':''}" onclick="setStatus('${r.id}',${wObj.weekNum},'${todayKey}','skipped','${logKey}')">${IC.skip} Skipped</button>
+          </div>
+          ${todayStatus?`<span style="font-size:11px;color:${todayStatus==='done'?'var(--run)':'var(--bike)'};font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em">${todayStatus==='done'?'Completed':'Skipped today'}</span>`:''}
+        </div>
         <div style="margin-top:10px">
           <label style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:5px;font-weight:600">Notes / RPE</label>
           <input type="text" value="${noteVal}" placeholder="e.g. RPE 6, felt strong…" style="width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:13px;padding:8px 11px;outline:none" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border2)'" onchange="logSession('${r.id}','${wObj.weekNum}','${todayKey}','note',this.value,'${logKey}')">
@@ -1188,19 +1235,18 @@ function renderTabToday(r){
       ${allOtherDays.map(d=>{
         const sess=wObj.sessions[d];
         const isRest=!sess||sess==='—';
-        const cls=isRest?'rest':sessColor(sess);
-        const done=logData[d]?.done;
-        return`<div class="today-session-row today-done" style="${isRest?'opacity:.55':''}">
+        const status=isRest?null:getStatus(logData[d]);
+        return`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);${isRest?'opacity:.5':''}">
+          <strong style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);width:26px;flex-shrink:0">${d}</strong>
+          <span style="flex:1;font-size:13px;${status==='skipped'?'text-decoration:line-through;color:var(--t3)':status==='done'?'color:var(--t2)':''}">${isRest?'Rest':sess}</span>
           ${isRest
-            ? `<span style="width:15px;height:15px;flex-shrink:0"></span>`
-            : `<input type="checkbox" ${done?'checked':''} onchange="logSession('${r.id}','${wObj.weekNum}','${d}','done',this.checked,'${logKey}')">`
+            ? `<button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700">${IC.plus} Add</button>`
+            : `<div class="today-action-btns" style="gap:4px">
+                <button class="btn-mark-done${status==='done'?' active':''}" style="padding:3px 8px;font-size:11px" onclick="setStatus('${r.id}',${wObj.weekNum},'${d}','done','${logKey}')">${IC.check}</button>
+                <button class="btn-mark-skip${status==='skipped'?' active':''}" style="padding:3px 8px;font-size:11px" onclick="setStatus('${r.id}',${wObj.weekNum},'${d}','skipped','${logKey}')">${IC.skip}</button>
+                <button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:3px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700">${IC.pencil}</button>
+              </div>`
           }
-          <div class="today-session-text" style="flex:1">
-            <div class="today-session-name" style="${done&&!isRest?'text-decoration:line-through;color:var(--t3)':''}">
-              <strong style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-right:6px">${d}</strong>${isRest?'Rest':sess}
-            </div>
-          </div>
-          <button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.05em;flex-shrink:0">${isRest?IC.plus+' Add':IC.pencil+' Edit'}</button>
         </div>`;
       }).join('')}
     </div>`
@@ -1315,9 +1361,14 @@ function renderTabLog(r){
   // Derive days from actual session data so Sun (and any custom days) appear automatically
   const usedLogDays=new Set(allWeeks.flatMap(w=>Object.keys(w.sessions||{})));
   const DAYS=ALL_DAYS.filter(d=>usedLogDays.has(d));
+  const skipped=getAllWeeks(r).reduce((a,w)=>{
+    const lk=`log_${r.id}_w${w.weekNum}`;
+    const ld=JSON.parse(localStorage.getItem(lk)||'{}');
+    return a+ALL_DAYS.filter(d=>w.sessions&&w.sessions[d]&&w.sessions[d]!=='—'&&getStatus(ld[d])==='skipped').length;
+  },0);
   const statsHtml=`<div class="log-stats">
-    <div class="log-stat"><div class="log-stat-label">Completed</div><div class="log-stat-val">${done}<span style="font-size:16px;color:var(--t3)">/${total}</span></div><div class="log-stat-sub">sessions</div></div>
-    <div class="log-stat"><div class="log-stat-label">Progress</div><div class="log-stat-val">${pct}%</div><div class="log-stat-sub">of plan logged</div></div>
+    <div class="log-stat"><div class="log-stat-label">Done</div><div class="log-stat-val" style="color:var(--run)">${done}<span style="font-size:16px;color:var(--t3)">/${total}</span></div><div class="log-stat-sub">${pct}% complete</div></div>
+    <div class="log-stat"><div class="log-stat-label">Skipped</div><div class="log-stat-val" style="color:${skipped>0?'var(--bike)':'var(--t3)'}">${skipped}</div><div class="log-stat-sub">${skipped?'sessions missed':''}&nbsp;</div></div>
     <div class="log-stat"><div class="log-stat-label">Current Week</div><div class="log-stat-val">${curWn}</div><div class="log-stat-sub">of ${allWeeks.length}</div></div>
     <div class="log-stat"><div class="log-stat-label">To Race</div><div class="log-stat-val">${daysUntil(r.date)}</div><div class="log-stat-sub">days</div></div>
   </div>`;
@@ -1325,17 +1376,23 @@ function renderTabLog(r){
     const logKey=`log_${r.id}_w${w.weekNum}`;
     const logData=JSON.parse(localStorage.getItem(logKey)||'{}');
     const wDays=DAYS.filter(d=>w.sessions[d]&&w.sessions[d]!=='—');
-    const wDone=wDays.filter(d=>logData[d]?.done).length;
+    const wDone=wDays.filter(d=>getStatus(logData[d])==='done').length;
+    const wSkip=wDays.filter(d=>getStatus(logData[d])==='skipped').length;
     const wPct=wDays.length>0?Math.round(wDone/wDays.length*100):0;
     const isCur=w.weekNum===curWn;
     const rows=wDays.map(d=>{
-      const checked=logData[d]?.done?'checked':'';
+      const status=getStatus(logData[d]);
       const noteVal=(logData[d]?.note||'').replace(/"/g,'&quot;');
-      return`<div class="log-row">
+      const btnIcon=status==='done'?IC.check:status==='skipped'?IC.skip:'';
+      const btnTitle=status===null?'Tap to mark done':status==='done'?'Tap to mark skipped':'Tap to clear';
+      return`<div class="log-row${status?' s-'+status:''}">
         <span class="log-row-day">${d}</span>
         <span class="log-row-plan">${w.sessions[d]}</span>
-        <span class="log-row-check"><input type="checkbox" ${checked} onchange="logSession('${r.id}','${w.weekNum}','${d}','done',this.checked,'${logKey}')"></span>
-        <span class="log-row-note"><input type="text" value="${noteVal}" placeholder="RPE, distance…" onchange="logSession('${r.id}','${w.weekNum}','${d}','note',this.value,'${logKey}')"></span>
+        <span style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0">
+          <button class="status-btn${status?' s-'+status:''}" title="${btnTitle}" onclick="cycleStatus('${r.id}','${w.weekNum}','${d}','${logKey}',this)">${btnIcon}</button>
+          <span class="status-label${status?' s-'+status:''}">${status?status.charAt(0).toUpperCase()+status.slice(1):''}</span>
+        </span>
+        <span class="log-row-note"><input type="text" value="${noteVal}" placeholder="Notes / RPE…" onchange="logSession('${r.id}','${w.weekNum}','${d}','note',this.value,'${logKey}')"></span>
       </div>`;
     }).join('');
     const reflVal=(logData['_refl']||'').replace(/"/g,'&quot;');
@@ -1343,7 +1400,7 @@ function renderTabLog(r){
       <div class="log-week-head" onclick="toggleLogWeek(this)">
         <span class="log-week-num">Week ${w.weekNum}</span>
         <span class="log-week-dates">${w.dates} · ${w.phase}</span>
-        <span class="log-week-prog">${wDone}/${wDays.length} done</span>
+        <span class="log-week-prog">${wDone} done${wSkip?` · <span style="color:var(--bike)">${wSkip} skipped</span>`:''}</span>
         <span style="color:var(--t3)">${IC.chevdown}</span>
       </div>
       <div class="log-bar"><div class="log-bar-fill" style="width:${wPct}%"></div></div>
@@ -1360,6 +1417,79 @@ function renderTabLog(r){
 }
 
 function toggleLogWeek(header){header.nextElementSibling.nextElementSibling.classList.toggle('open');}
+
+// ─── STATUS HELPERS ───────────────────────────────────────────────
+// Returns 'done' | 'skipped' | null from stored day data
+function getStatus(dayData){
+  if(!dayData) return null;
+  if(dayData.status) return dayData.status;
+  if(dayData.done) return 'done'; // backward compat
+  return null;
+}
+
+// Cycle: null → done → skipped → null
+function cycleStatus(rId,wNum,day,logKey,btn){
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  if(!store[day]) store[day]={};
+  const cur=getStatus(store[day]);
+  const next=cur===null?'done':cur==='done'?'skipped':null;
+  store[day].status=next;
+  store[day].done=(next==='done'); // keep backward compat
+  localStorage.setItem(logKey,JSON.stringify(store));
+  // Update button UI without full re-render
+  if(btn){
+    btn.className=`status-btn${next?' s-'+next:''}`;
+    btn.innerHTML=next==='done'?IC.check:next==='skipped'?IC.skip:'';
+    btn.title=next===null?'Tap to mark done':next==='done'?'Tap to mark skipped':'Tap to clear';
+    // Update the row class
+    const row=btn.closest('.log-row');
+    if(row){row.className=`log-row${next?' s-'+next:''}`;}
+    // Update status label
+    const lbl=btn.parentElement?.querySelector('.status-label');
+    if(lbl){lbl.textContent=next?next.charAt(0).toUpperCase()+next.slice(1):'';lbl.className=`status-label${next?' s-'+next:''}`;}
+  }
+  _refreshLogProgressBar(rId,wNum,logKey);
+  renderSidebar();
+}
+
+// Set explicit status (used from Today tab buttons)
+function setStatus(rId,wNum,day,newStatus,logKey){
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  if(!store[day]) store[day]={};
+  const cur=getStatus(store[day]);
+  // Toggle: clicking active state clears it
+  const next=(cur===newStatus)?null:newStatus;
+  store[day].status=next;
+  store[day].done=(next==='done');
+  localStorage.setItem(logKey,JSON.stringify(store));
+  // Re-render the full race view so Today + Log both sync
+  const r=DATA.races.find(x=>x.id===rId);
+  if(r) renderRace(rId);
+  _refreshLogProgressBar(rId,wNum,logKey);
+  renderSidebar();
+}
+
+function _refreshLogProgressBar(rId,wNum,logKey){
+  const r=DATA.races.find(x=>x.id===rId);if(!r)return;
+  const allWeeks=getAllWeeks(r);
+  const w=allWeeks.find(x=>x.weekNum==wNum);if(!w)return;
+  const usedDays=new Set(allWeeks.flatMap(x=>Object.keys(x.sessions||{})));
+  const DAYS=ALL_DAYS.filter(x=>usedDays.has(x));
+  const wDays=DAYS.filter(x=>w.sessions[x]&&w.sessions[x]!=='—');
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  const wDone=wDays.filter(x=>getStatus(store[x])==='done').length;
+  const wSkip=wDays.filter(x=>getStatus(store[x])==='skipped').length;
+  const pct=wDays.length?Math.round(wDone/wDays.length*100):0;
+  document.querySelectorAll('#tab-log .log-week').forEach(el=>{
+    const title=el.querySelector('.log-week-num');
+    if(title&&title.textContent===`Week ${wNum}`){
+      const bar=el.querySelector('.log-bar-fill');if(bar)bar.style.width=pct+'%';
+      const prog=el.querySelector('.log-week-prog');
+      if(prog)prog.textContent=`${wDone} done${wSkip?` · ${wSkip} skipped`:''}`;
+    }
+  });
+}
+
 function logSession(rId,wNum,day,field,val,logKey){
   const d=JSON.parse(localStorage.getItem(logKey)||'{}');
   if(!d[day])d[day]={};
@@ -1451,7 +1581,7 @@ function countTotal(r){return getAllWeeks(r).reduce((a,w)=>a+ALL_DAYS.filter(d=>
 function countDone(r){
   return getAllWeeks(r).reduce((a,w)=>{
     const d=JSON.parse(localStorage.getItem(`log_${r.id}_w${w.weekNum}`)||'{}');
-    return a+Object.keys(w.sessions||{}).filter(k=>d[k]?.done).length;
+    return a+ALL_DAYS.filter(k=>w.sessions&&w.sessions[k]&&w.sessions[k]!=='—'&&getStatus(d[k])==='done').length;
   },0);
 }
 
