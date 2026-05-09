@@ -353,6 +353,25 @@ svg{display:block;}
 /* Skipped session visual in today card */
 .today-session-name.s-skipped{text-decoration:line-through;color:var(--t3);}
 .today-session-name.s-done{color:var(--t2);}
+/* Custom workout rows */
+.custom-badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--tri);background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:3px;padding:1px 6px;flex-shrink:0;}
+.custom-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
+.custom-row-text{flex:1;font-size:13px;}
+.custom-row-text.s-done{color:var(--t2);}
+.custom-row-text.s-skipped{text-decoration:line-through;color:var(--t3);}
+.btn-remove-custom{background:transparent;border:none;color:var(--t3);cursor:pointer;padding:2px 4px;font-size:16px;line-height:1;transition:color .15s;flex-shrink:0;}
+.btn-remove-custom:hover{color:#f87171;}
+.btn-add-custom{background:transparent;border:1px dashed var(--border2);color:var(--t2);border-radius:var(--rs);padding:8px 14px;font-size:13px;cursor:pointer;width:100%;text-align:center;transition:all .18s;margin-top:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-add-custom:hover{border-color:var(--t1);color:var(--white);background:rgba(255,255,255,.03);}
+.btn-add-custom svg{width:14px;height:14px;}
+.custom-input-row{display:none;align-items:center;gap:6px;margin-top:10px;}
+.custom-input-row.visible{display:flex;}
+.custom-input-row input{flex:1;background:var(--s2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:13px;padding:8px 11px;outline:none;transition:border-color .18s;}
+.custom-input-row input:focus{border-color:var(--red);}
+.btn-custom-add{background:var(--red);border:none;color:#fff;border-radius:var(--rs);padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:.06em;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.btn-custom-add:hover{background:var(--red2);}
+.btn-custom-cancel{background:transparent;border:1px solid var(--border2);color:var(--t2);border-radius:var(--rs);padding:8px 10px;font-size:12px;cursor:pointer;transition:border-color .15s;white-space:nowrap;}
+.btn-custom-cancel:hover{border-color:var(--t1);}
 
 /* ─── GEAR TAB ───────────────────────────────────────────────── */
 .gear-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
@@ -1213,6 +1232,7 @@ function renderTabToday(r){
           </div>
           ${todayStatus?`<span style="font-size:11px;color:${todayStatus==='done'?'var(--run)':'var(--bike)'};font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em">${todayStatus==='done'?'Completed':'Skipped today'}</span>`:''}
         </div>
+        ${renderCustomSection(r.id,wObj.weekNum,todayKey,logKey)}
         <div style="margin-top:10px">
           <label style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:5px;font-weight:600">Notes / RPE</label>
           <input type="text" value="${noteVal}" placeholder="e.g. RPE 6, felt strong…" style="width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:13px;padding:8px 11px;outline:none" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border2)'" onchange="logSession('${r.id}','${wObj.weekNum}','${todayKey}','note',this.value,'${logKey}')">
@@ -1220,8 +1240,9 @@ function renderTabToday(r){
       </div>`;
   } else {
     todayHtml=`<div class="today-card" style="grid-column:1/-1">
-      <h4 style="display:flex;justify-content:space-between;align-items:center">Today — ${todayKey} ${editBtn(todayKey)}</h4>
-      <div style="color:var(--t3);font-size:13px;font-style:italic">Rest day — tap Edit to add a session.</div>
+      <h4 style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">Today — ${todayKey} ${editBtn(todayKey)}</h4>
+      <div style="color:var(--t3);font-size:13px;font-style:italic;margin-bottom:4px">Rest day — add a custom workout below if you want to train.</div>
+      ${renderCustomSection(r.id,wObj.weekNum,todayKey,logKey)}
     </div>`;
   }
 
@@ -1240,14 +1261,15 @@ function renderTabToday(r){
           <strong style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);width:26px;flex-shrink:0">${d}</strong>
           <span style="flex:1;font-size:13px;${status==='skipped'?'text-decoration:line-through;color:var(--t3)':status==='done'?'color:var(--t2)':''}">${isRest?'Rest':sess}</span>
           ${isRest
-            ? `<button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700">${IC.plus} Add</button>`
+            ? `<button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700">${IC.plus} Plan</button>`
             : `<div class="today-action-btns" style="gap:4px">
                 <button class="btn-mark-done${status==='done'?' active':''}" style="padding:3px 8px;font-size:11px" onclick="setStatus('${r.id}',${wObj.weekNum},'${d}','done','${logKey}')">${IC.check}</button>
                 <button class="btn-mark-skip${status==='skipped'?' active':''}" style="padding:3px 8px;font-size:11px" onclick="setStatus('${r.id}',${wObj.weekNum},'${d}','skipped','${logKey}')">${IC.skip}</button>
                 <button onclick="openEdit('${r.id}',${wObj.weekNum},'${d}',event)" style="background:transparent;border:1px solid var(--border2);color:var(--t3);border-radius:4px;padding:3px 7px;font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700">${IC.pencil}</button>
               </div>`
           }
-        </div>`;
+        </div>
+        <div style="padding:0 0 4px 34px">${renderCustomSection(r.id,wObj.weekNum,d,logKey,true)}</div>`;
       }).join('')}
     </div>`
 
@@ -1467,6 +1489,74 @@ function setStatus(rId,wNum,day,newStatus,logKey){
   if(r) renderRace(rId);
   _refreshLogProgressBar(rId,wNum,logKey);
   renderSidebar();
+}
+
+// ─── CUSTOM WORKOUTS ─────────────────────────────────────────────
+function showCustomInput(day){
+  const row=document.getElementById(`ci_row_${day}`);
+  if(row){row.classList.add('visible');row.querySelector('input').focus();}
+  const btn=document.getElementById(`ci_btn_${day}`);
+  if(btn)btn.style.display='none';
+}
+function hideCustomInput(day){
+  const row=document.getElementById(`ci_row_${day}`);
+  if(row){row.classList.remove('visible');const inp=row.querySelector('input');if(inp)inp.value='';}
+  const btn=document.getElementById(`ci_btn_${day}`);
+  if(btn)btn.style.display='';
+}
+function addCustomWorkout(rId,wNum,day,logKey,inputId){
+  const inp=document.getElementById(inputId);
+  const text=inp?inp.value.trim():'';
+  if(!text)return;
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  const key=`_custom_${day}`;
+  if(!store[key])store[key]=[];
+  store[key].push({id:Date.now().toString(),text,status:null});
+  localStorage.setItem(logKey,JSON.stringify(store));
+  // Re-render today tab
+  const r=DATA.races.find(x=>x.id===rId);
+  if(r){renderTabToday(r);// keep the tab visible
+  ['today','plan','log','gear','overview'].forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display=t==='today'?'block':'none';});}
+}
+function removeCustomWorkout(rId,wNum,day,id,logKey){
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  const key=`_custom_${day}`;
+  if(store[key])store[key]=store[key].filter(w=>w.id!==id);
+  localStorage.setItem(logKey,JSON.stringify(store));
+  const r=DATA.races.find(x=>x.id===rId);
+  if(r){renderTabToday(r);['today','plan','log','gear','overview'].forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display=t==='today'?'block':'none';});}
+}
+function cycleCustomStatus(rId,wNum,day,id,logKey){
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  const key=`_custom_${day}`;
+  if(store[key]){const w=store[key].find(x=>x.id===id);if(w){const cur=w.status;w.status=cur===null?'done':cur==='done'?'skipped':null;}}
+  localStorage.setItem(logKey,JSON.stringify(store));
+  const r=DATA.races.find(x=>x.id===rId);
+  if(r){renderTabToday(r);['today','plan','log','gear','overview'].forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display=t==='today'?'block':'none';});}
+}
+
+// Helper: render custom workouts + add-button for a given day
+function renderCustomSection(rId,wNum,day,logKey,compact=false){
+  const store=JSON.parse(localStorage.getItem(logKey)||'{}');
+  const customs=store[`_custom_${day}`]||[];
+  const inputId=`ci_inp_${day}`;
+  const rows=customs.map(cw=>`
+    <div class="custom-row">
+      <span class="custom-badge">Custom</span>
+      <span class="custom-row-text${cw.status?' s-'+cw.status:''}">${cw.text}</span>
+      <div class="today-action-btns" style="gap:4px">
+        <button class="btn-mark-done${cw.status==='done'?' active':''}" style="padding:${compact?'3px 7px':'5px 10px'};font-size:11px" onclick="cycleCustomStatus('${rId}',${wNum},'${day}','${cw.id}','${logKey}')">${IC.check}</button>
+        <button class="btn-mark-skip${cw.status==='skipped'?' active':''}" style="padding:${compact?'3px 7px':'5px 10px'};font-size:11px" onclick="cycleCustomStatus('${rId}',${wNum},'${day}','${cw.id}','${logKey}')">${IC.skip}</button>
+        <button class="btn-remove-custom" onclick="removeCustomWorkout('${rId}',${wNum},'${day}','${cw.id}','${logKey}')" title="Remove">×</button>
+      </div>
+    </div>`).join('');
+  return`${rows}
+    <div class="custom-input-row" id="ci_row_${day}">
+      <input id="${inputId}" type="text" placeholder="e.g. 30 min yoga, extra swim…" onkeydown="if(event.key==='Enter')addCustomWorkout('${rId}',${wNum},'${day}','${logKey}','${inputId}');if(event.key==='Escape')hideCustomInput('${day}')">
+      <button class="btn-custom-add" onclick="addCustomWorkout('${rId}',${wNum},'${day}','${logKey}','${inputId}')">Add</button>
+      <button class="btn-custom-cancel" onclick="hideCustomInput('${day}')">Cancel</button>
+    </div>
+    <button class="btn-add-custom" id="ci_btn_${day}" onclick="showCustomInput('${day}')">${IC.plus} Add workout</button>`;
 }
 
 function _refreshLogProgressBar(rId,wNum,logKey){
