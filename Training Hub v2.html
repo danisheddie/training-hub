@@ -1409,17 +1409,11 @@ function startCountdown(raceId,dateStr){
     const el=document.getElementById('race-countdown');if(!el)return;
     if(diff<=0){el.innerHTML='<span style="font-family:Barlow Condensed,sans-serif;font-weight:900;font-size:28px;color:var(--red2)">RACE DAY</span>';return;}
     const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);
-    if(d>14){
-      el.innerHTML=`<div class="cd-block"><span class="cd-val">${String(d).padStart(3,'0')}</span><div class="cd-lbl">Days</div></div>
-      <span class="cd-sep">:</span>
-      <div class="cd-block"><span class="cd-val">${String(h).padStart(2,'0')}</span><div class="cd-lbl">Hrs</div></div>`;
-    } else {
-      el.innerHTML=`<div class="cd-block"><span class="cd-val">${String(d).padStart(2,'0')}</span><div class="cd-lbl">Days</div></div>
+    el.innerHTML=`<div class="cd-block"><span class="cd-val">${String(d).padStart(3,'0')}</span><div class="cd-lbl">Days</div></div>
       <span class="cd-sep">:</span>
       <div class="cd-block"><span class="cd-val">${String(h).padStart(2,'0')}</span><div class="cd-lbl">Hrs</div></div>
       <span class="cd-sep">:</span>
       <div class="cd-block"><span class="cd-val">${String(m).padStart(2,'0')}</span><div class="cd-lbl">Min</div></div>`;
-    }
   }
   tick();_timers[raceId]=setInterval(tick,1000);
 }
@@ -3034,14 +3028,30 @@ function buildTmplFullMarathon(name,date){
 function addOptionalRest(r){
   const isTri=r.type&&r.type.startsWith('tri');
   const isHyrox=r.type==='hyrox';
-  const opts={
-    Mon:isTri?'Optional: Easy swim 20 min or yoga 30 min':'Optional: Yoga 30 min or foam roll 20 min',
-    Tue:'Optional: Easy walk 30 min or mobility 20 min',
-    Wed:isTri?'Optional: Easy swim 20 min (technique only)':'Optional: Mobility 25 min or light stretching',
-    Thu:'Optional: Foam roll + stretching 25 min',
-    Fri:'Optional: Easy walk 20 min or gentle yoga',
-    Sat:isTri?'Optional: Easy swim 20 min or yoga 40 min':'Optional: Yoga 40 min or easy walk 30 min',
-    Sun:'Optional: Easy walk 20 min or full rest',
+  const opts=isTri?{
+    Mon:'Optional: Easy swim 30 min — technique sets',
+    Tue:'Optional: Easy run 25 min Z1 + drills',
+    Wed:'Optional: Easy bike 40 min Z1 or easy swim 25 min',
+    Thu:'Optional: Easy run 30 min Z1',
+    Fri:'Optional: Easy swim 25 min — open water if possible',
+    Sat:'Optional: Easy bike 45 min Z1 or easy swim 30 min',
+    Sun:'Optional: Easy run 20 min Z1',
+  }:isHyrox?{
+    Mon:'Optional: Easy run 25 min Z1',
+    Tue:'Optional: Rowing machine 20 min easy + SkiErg 10 min',
+    Wed:'Optional: Easy run 30 min Z1',
+    Thu:'Optional: SkiErg 15 min + Rowing 15 min easy pace',
+    Fri:'Optional: Easy run 25 min Z1',
+    Sat:'Optional: Easy bike 35 min or easy run 20 min',
+    Sun:'Optional: Easy run 20 min Z1',
+  }:{
+    Mon:'Optional: Easy run 25 min Z1',
+    Tue:'Optional: Easy bike 35 min or cross-train 30 min',
+    Wed:'Optional: Easy run 30 min Z1',
+    Thu:'Optional: Easy bike 30 min or easy swim 20 min',
+    Fri:'Optional: Easy run 20 min Z1 + strides',
+    Sat:'Optional: Easy bike 40 min or cross-train 30 min',
+    Sun:'Optional: Easy run 20 min Z1',
   };
   const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   (r.phases||[]).forEach(ph=>(ph.weeks||[]).forEach(w=>{
@@ -3223,9 +3233,26 @@ function exportPDF(){window.print();}
 
 function buildRaceCalendarPDF(r){
   if(!r)return'<html><body>No race data.</body></html>';
-  const sd=r.startDate;
+  let sd=r.startDate;
+  // Fallback: infer startDate from week 1 dates string e.g. "11 May – 17 May"
   if(!sd){
-    return`<html><body style="font-family:sans-serif;padding:40px;color:#1e293b"><h2>Calendar PDF not available</h2><p style="margin-top:12px;color:#64748b">This race doesn't have a stored start date. Calendar PDF is available for:<br>• Plans created from templates<br>• Plans generated via the wizard after the latest update</p></body></html>`;
+    const w1=getAllWeeks(r)[0];
+    if(w1&&w1.dates){
+      const m=w1.dates.match(/^(\d+)\s+(\w+)/);
+      if(m){
+        const MO={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+        const mo=MO[m[2]];const day=parseInt(m[1]);
+        const raceYear=new Date(r.date).getFullYear();
+        const raceMo=new Date(r.date).getMonth();
+        const yr=(mo>raceMo||(mo===raceMo&&day>new Date(r.date).getDate()))?raceYear-1:raceYear;
+        sd=new Date(yr,mo,day).toISOString().split('T')[0];
+        r.startDate=sd; // cache so next call is instant
+        save();
+      }
+    }
+  }
+  if(!sd){
+    return`<html><body style="font-family:sans-serif;padding:40px;color:#1e293b"><h2>Calendar PDF not available</h2><p style="margin-top:12px;color:#64748b">Could not determine plan start date. Open the race and re-save it, or use a template plan.</p></body></html>`;
   }
   const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
