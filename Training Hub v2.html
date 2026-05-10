@@ -897,12 +897,25 @@ svg{display:block;}
         <div class="race-theme-swatches" id="race-theme-swatches"></div>
         <button class="race-theme-clear" id="race-theme-clear" onclick="clearRaceTheme()" style="display:none">Reset</button>
       </div>
-      <div class="race-tabs" style="margin-top:14px">
-        <button class="r-tab active" data-tab="today" onclick="switchTab('today',this)">Today</button>
-        <button class="r-tab" data-tab="plan" onclick="switchTab('plan',this)">Schedule</button>
-        <button class="r-tab" data-tab="log" onclick="switchTab('log',this)">Log</button>
-        <button class="r-tab" data-tab="gear" onclick="switchTab('gear',this)">Gear</button>
-        <button class="r-tab" data-tab="overview" onclick="switchTab('overview',this)">Overview</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:14px">
+        <div class="race-tabs" style="margin-top:0">
+          <button class="r-tab active" data-tab="today" onclick="switchTab('today',this)">Today</button>
+          <button class="r-tab" data-tab="plan" onclick="switchTab('plan',this)">Schedule</button>
+          <button class="r-tab" data-tab="log" onclick="switchTab('log',this)">Log</button>
+          <button class="r-tab" data-tab="gear" onclick="switchTab('gear',this)">Gear</button>
+          <button class="r-tab" data-tab="overview" onclick="switchTab('overview',this)">Overview</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0" id="race-export-bar">
+          <button class="btn-export" onclick="exportPDF()" title="Print / Save as PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF
+          </button>
+          <button class="btn-export" id="btn-export-csv" title="Export to Excel / Sheets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>CSV
+          </button>
+          <button class="btn-export" id="btn-export-ics" title="Add all sessions to Google Calendar / Apple Calendar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar
+          </button>
+        </div>
       </div>
     </div>
     <div class="race-body">
@@ -1341,6 +1354,9 @@ function renderRace(raceId){
   // Apply race-specific theme if set, else restore global
   applyTheme(r.theme||getGlobalTheme());
   renderRaceThemeSwatches(raceId);
+  // Wire header export buttons to this race
+  const csv=document.getElementById('btn-export-csv');if(csv)csv.onclick=()=>exportCSV(raceId);
+  const ics=document.getElementById('btn-export-ics');if(ics)ics.onclick=()=>exportICS(raceId);
   // header
   document.getElementById('rh-type').innerHTML=`${IC[typeIcon(r.type)]||IC.flag} ${typeLabel(r.type)}`;
   document.getElementById('rh-name').innerHTML=`<span class="ie-wrap" style="flex-wrap:nowrap">
@@ -2669,6 +2685,14 @@ function renderTemplates(){
       <div class="tmpl-card-meta">${t.desc} · Beginner–Intermediate</div>
       <div class="tmpl-card-tags">${t.tags.map(g=>`<span class="tmpl-tag ${g}">${g}</span>`).join('')}</div>
       <button class="btn-use-tmpl" onclick="openTemplateModal('${t.id}')">Use This Template →</button>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn-export" style="flex:1;justify-content:center" onclick="downloadTemplate('${t.id}','csv')" title="Download as spreadsheet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>CSV
+        </button>
+        <button class="btn-export" style="flex:1;justify-content:center" onclick="downloadTemplate('${t.id}','ics')" title="Import into Google Calendar / Apple Calendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar
+        </button>
+      </div>
     </div>`).join('');
 }
 
@@ -3011,6 +3035,18 @@ function buildTmplFullMarathon(name,date){
   });
 }
 
+function downloadTemplate(tmplId,format){
+  const meta=TEMPLATE_META.find(t=>t.id===tmplId);if(!meta)return;
+  const builders={'hyrox-12':buildTmplHyrox,'sprint-14':buildTmplSprintTri,'703-24':buildTmpl703,'full-im-32':buildTmplFullIM,'half-16':buildTmplHalfMarathon,'full-20':buildTmplFullMarathon};
+  const fn=builders[tmplId];if(!fn)return;
+  // Use a date ~numWeeks+2 from today so the schedule starts from next Monday
+  const d=new Date();d.setDate(d.getDate()+(meta.weeks+2)*7);
+  const date=d.toISOString().split('T')[0];
+  const r=fn(meta.label+' — Sample Plan',date);
+  if(format==='csv')exportCSV(r);
+  else if(format==='ics')exportICS(r);
+}
+
 // ─── EXPORT FUNCTIONS ────────────────────────────────────────────
 function downloadFile(filename,content,mime){
   const a=document.createElement('a');
@@ -3023,7 +3059,7 @@ function exportPDF(){
 }
 
 function exportCSV(raceId){
-  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  const r=typeof raceId==='object'?raceId:DATA.races.find(x=>x.id===raceId);if(!r)return;
   const rows=[['Week','Phase','Dates','Day','Session']];
   getAllWeeks(r).forEach(w=>ALL_DAYS.forEach(d=>{
     if(w.sessions[d])rows.push([w.weekNum,w.phase||'',w.dates||'',d,w.sessions[d]]);
@@ -3033,7 +3069,7 @@ function exportCSV(raceId){
 }
 
 function exportICS(raceId){
-  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  const r=typeof raceId==='object'?raceId:DATA.races.find(x=>x.id===raceId);if(!r)return;
   const sd=r.startDate;
   if(!sd){alert('This race does not have a stored start date. ICS export works with template-generated plans or plans created after this update.');return;}
   const DAY_OFFSET={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6};
