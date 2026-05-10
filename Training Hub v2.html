@@ -1317,7 +1317,7 @@ function renderPhaseProgress(r){
 }
 
 function startCountdown(raceId,dateStr){
-  if(_timers[raceId])clearInterval(_timers[raceId]);
+  Object.values(_timers).forEach(clearInterval);_timers={};
   function tick(){
     const race=new Date(dateStr);race.setHours(6,0,0,0);
     const diff=race-new Date();
@@ -2183,7 +2183,7 @@ function showGenerating(){
   let i=0;
   const fill=document.getElementById('gen-fill');
   const lbl=document.getElementById('gen-label');
-  const intervals=[400,600,550,500,350];
+  const intervals=[1500,1800,1800,1400,1000];
 
   function nextStep(){
     if(!fill||!lbl)return;
@@ -2192,7 +2192,7 @@ function showGenerating(){
     setTimeout(()=>{if(lbl){lbl.textContent=steps[i].label;lbl.style.opacity='1';}},150);
     i++;
     if(i<steps.length){setTimeout(nextStep,intervals[i-1]);}
-    else{setTimeout(finishGenerate,500);}
+    else{setTimeout(finishGenerate,800);}
   }
   setTimeout(nextStep,100);
 }
