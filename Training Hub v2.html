@@ -585,6 +585,50 @@ svg{display:block;}
 [data-theme="light"] .sb-race-icon.c-run{background:rgba(46,125,50,.12);}
 [data-theme="light"] .race-card,.today-card,.log-week,.gear-group,.ov-stat,.log-stat{box-shadow:0 1px 4px rgba(0,0,0,.08);}
 
+/* ─── TEMPLATES ─────────────────────────────────────────────────── */
+.tmpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;margin-bottom:40px;}
+.tmpl-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:border-color .15s,background .15s;}
+.tmpl-card:hover{border-color:var(--red-border);background:var(--s2);}
+.tmpl-card-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.tmpl-card-icon svg{width:17px;height:17px;}
+.tmpl-card-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:.04em;margin-bottom:2px;}
+.tmpl-card-meta{font-size:11px;color:var(--t3);margin-bottom:10px;}
+.tmpl-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px;}
+.tmpl-tag{font-size:10px;padding:2px 7px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.tmpl-tag.swim{background:var(--swim-dim);color:var(--swim);}
+.tmpl-tag.bike{background:var(--bike-dim);color:var(--bike);}
+.tmpl-tag.run{background:var(--run-dim);color:var(--run);}
+.tmpl-tag.strength{background:rgba(248,113,113,.1);color:#f87171;}
+.tmpl-tag.gym{background:rgba(245,158,11,.1);color:#f59e0b;}
+.btn-use-tmpl{width:100%;background:var(--red-dim);border:1px solid var(--red-border);color:var(--red2);border-radius:var(--rs);padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.btn-use-tmpl:hover{background:var(--red);color:#fff;}
+/* ─── TEMPLATE MODAL ─────────────────────────────────────────────── */
+#tmpl-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+#tmpl-overlay.open{display:flex;}
+#tmpl-modal{background:var(--s1);border:1px solid var(--border2);border-radius:var(--r);width:100%;max-width:400px;padding:28px;box-shadow:var(--shadow);}
+.tmpl-modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.tmpl-modal-sub{font-size:13px;color:var(--t2);margin-bottom:20px;}
+.tmpl-modal-btns{display:flex;gap:8px;margin-top:20px;}
+.btn-tmpl-cancel{flex:1;background:none;border:1px solid var(--border2);color:var(--t2);border-radius:var(--rs);padding:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.btn-tmpl-cancel:hover{border-color:var(--t2);color:var(--white);}
+.btn-tmpl-go{flex:2;background:var(--red);border:none;color:#fff;border-radius:var(--rs);padding:9px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .15s;}
+.btn-tmpl-go:hover{background:var(--red2);}
+/* ─── EXPORT ─────────────────────────────────────────────────────── */
+.export-bar{display:flex;gap:8px;flex-wrap:wrap;padding:14px 0 0;}
+.btn-export{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border2);color:var(--t1);border-radius:var(--rs);padding:7px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.btn-export:hover{border-color:var(--red-border);color:var(--red2);}
+.btn-export svg{width:13px;height:13px;flex-shrink:0;}
+/* ─── PRINT ──────────────────────────────────────────────────────── */
+@media print{
+  #sidebar,#mob-bar,.race-tabs,.today-action-btns,.day-edit-btn,.btn-mark-done,.btn-mark-skip,.btn-export,.export-bar,.race-theme-bar,.race-back,.phase-jump-bar,.btn-delete,.ie-pencil,#edge-pull-hint,.wk-chevron,.ph-chevron,.week-card-head,.day-row button{display:none!important;}
+  body{background:#fff!important;color:#111!important;font-size:12px;}
+  #main{margin-left:0!important;padding:0!important;}
+  .race-header{background:#fff!important;border:none!important;padding:16px 0!important;}
+  .phase-block,.week-card{break-inside:avoid;border:1px solid #ddd!important;margin-bottom:8px!important;}
+  .ph-body,.wk-body{display:block!important;max-height:none!important;}
+  .day-sessions .sess-chip{border:1px solid #ccc!important;}
+}
+
 /* ─── PER-RACE THEME BAR ─────────────────────────────────────── */
 .race-theme-bar{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
 .race-theme-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);font-weight:600;white-space:nowrap;}
@@ -820,6 +864,9 @@ svg{display:block;}
     </div>
     <div class="hub-section-title">All Races</div>
     <div class="race-grid" id="hub-grid"></div>
+    <div class="hub-section-title" style="margin-top:36px">Training Templates</div>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:18px;margin-top:-8px">Coach-designed plans for beginner–intermediate athletes. Pick a template, set your race date, and your plan is ready in seconds.</p>
+    <div class="tmpl-grid" id="tmpl-grid"></div>
   </div>
 
   <!-- RACE VIEW -->
@@ -889,6 +936,26 @@ svg{display:block;}
         <button class="btn-wiz-back" id="btn-wiz-back" onclick="wizBack()">Back</button>
         <button class="btn-wiz-next" id="btn-wiz-next" onclick="wizNext()">Next</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATE MODAL -->
+<div id="tmpl-overlay">
+  <div id="tmpl-modal">
+    <div class="tmpl-modal-title" id="tmpl-modal-title">Use Template</div>
+    <div class="tmpl-modal-sub">Set your race name and date — we'll build the full plan.</div>
+    <div class="wiz-field">
+      <label class="wiz-label">Race name <span style="font-weight:400;color:var(--t3)">(optional)</span></label>
+      <input class="wiz-input" id="tmpl-name-inp" type="text" placeholder="e.g. My First Ironman 70.3">
+    </div>
+    <div class="wiz-field">
+      <label class="wiz-label">Race date</label>
+      <input class="wiz-input" id="tmpl-date-inp" type="date">
+    </div>
+    <div class="tmpl-modal-btns">
+      <button class="btn-tmpl-cancel" onclick="closeTemplateModal()">Cancel</button>
+      <button class="btn-tmpl-go" onclick="startTemplate()">Generate Plan →</button>
     </div>
   </div>
 </div>
@@ -1188,6 +1255,7 @@ function renderHub(){
   const races=DATA.races||[];
   document.getElementById('hub-sub').textContent=races.length?`${races.length} race${races.length>1?'s':''} · click a card to open the training plan.`:'Add your first race to get started.';
   renderThisWeek(races);
+  renderTemplates();
   const conflicts=detectConflicts(races);
   const conflictIds=new Set(conflicts.flatMap(c=>[c.a,c.b]));
   if(!races.length){
@@ -1857,6 +1925,22 @@ function renderTabOverview(r){
         ${profHtml}
         <button class="btn-delete" onclick="deleteRace('${r.id}')">${IC.trash} Remove race</button>
       </div>
+    </div>
+    <div class="divider"></div>
+    <div class="ov-section-title">Export &amp; Sync</div>
+    <div class="export-bar">
+      <button class="btn-export" onclick="exportPDF()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Export PDF
+      </button>
+      <button class="btn-export" onclick="exportCSV('${r.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        Export CSV
+      </button>
+      <button class="btn-export" onclick="exportICS('${r.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Add to Calendar (.ics)
+      </button>
     </div>`;
 }
 
@@ -2553,6 +2637,425 @@ function clearRaceTheme(){
     document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active',s.dataset.t===t));
   });
 })();
+
+// ─── TEMPLATE INFRASTRUCTURE ─────────────────────────────────────
+const TEMPLATE_META=[
+  {id:'hyrox-12',   label:'Hyrox',          icon:'hyrox', type:'hyrox',       weeks:12, desc:'12-week plan', tags:['run','gym','strength']},
+  {id:'sprint-14',  label:'Sprint Triathlon',icon:'tri',   type:'tri-sprint',  weeks:14, desc:'14-week plan', tags:['swim','bike','run','strength']},
+  {id:'703-24',     label:'Ironman 70.3',    icon:'tri',   type:'tri-703',     weeks:24, desc:'24-week plan', tags:['swim','bike','run','strength']},
+  {id:'full-im-32', label:'Ironman Full',    icon:'tri',   type:'tri-full',    weeks:32, desc:'32-week plan', tags:['swim','bike','run','strength']},
+  {id:'half-16',    label:'Half Marathon',   icon:'run',   type:'run-half',    weeks:16, desc:'16-week plan', tags:['run','strength']},
+  {id:'full-20',    label:'Full Marathon',   icon:'run',   type:'run-marathon',weeks:20, desc:'20-week plan', tags:['run','strength']},
+];
+
+let _activeTmpl=null;
+
+function planStartDate(raceDate,numWeeks){
+  const d=new Date(raceDate);
+  d.setDate(d.getDate()-numWeeks*7);
+  const day=d.getDay();
+  d.setDate(d.getDate()+(day===0?1:day===1?0:8-day));
+  return d.toISOString().split('T')[0];
+}
+
+function renderTemplates(){
+  const el=document.getElementById('tmpl-grid');if(!el)return;
+  el.innerHTML=TEMPLATE_META.map(t=>`
+    <div class="tmpl-card">
+      <div class="tmpl-card-icon c-${t.icon==='tri'?'tri':t.icon==='run'?'run':'hyrox'}" style="background:${t.icon==='tri'?'rgba(167,139,250,.15)':t.icon==='run'?'rgba(52,211,153,.12)':'rgba(245,158,11,.12)'}">
+        ${IC[t.icon==='tri'?'tri':t.icon==='run'?'run':'hyrox']||IC.flag}
+      </div>
+      <div class="tmpl-card-name">${t.label}</div>
+      <div class="tmpl-card-meta">${t.desc} · Beginner–Intermediate</div>
+      <div class="tmpl-card-tags">${t.tags.map(g=>`<span class="tmpl-tag ${g}">${g}</span>`).join('')}</div>
+      <button class="btn-use-tmpl" onclick="openTemplateModal('${t.id}')">Use This Template →</button>
+    </div>`).join('');
+}
+
+function openTemplateModal(id){
+  _activeTmpl=TEMPLATE_META.find(t=>t.id===id);if(!_activeTmpl)return;
+  document.getElementById('tmpl-modal-title').textContent=_activeTmpl.label;
+  document.getElementById('tmpl-name-inp').value='';
+  document.getElementById('tmpl-date-inp').value='';
+  document.getElementById('tmpl-overlay').classList.add('open');
+}
+function closeTemplateModal(){document.getElementById('tmpl-overlay').classList.remove('open');_activeTmpl=null;}
+
+function startTemplate(){
+  if(!_activeTmpl)return;
+  const name=document.getElementById('tmpl-name-inp').value.trim()||_activeTmpl.label;
+  const date=document.getElementById('tmpl-date-inp').value;
+  if(!date){document.getElementById('tmpl-date-inp').focus();return;}
+  closeTemplateModal();
+  // Reuse wizard loading screen
+  document.getElementById('wiz-overlay').classList.add('open');
+  document.getElementById('wiz-title').textContent='Building Your Plan';
+  document.getElementById('wiz-subtitle').textContent='';
+  document.getElementById('wiz-step-lbl').textContent='';
+  ['btn-wiz-back','btn-wiz-next'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  const x=document.querySelector('.wiz-x');if(x)x.style.display='none';
+  const sr=document.getElementById('wiz-steps-row');if(sr)sr.style.display='none';
+  const steps=[{label:'Loading template…',pct:20},{label:'Building phases…',pct:45},{label:'Scheduling sessions…',pct:70},{label:'Adding strength blocks…',pct:90},{label:'Finishing up…',pct:100}];
+  document.getElementById('wiz-body').innerHTML=`<div class="wiz-generating">
+    <div class="wiz-gen-icon"><svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="22" stroke="var(--s3)" stroke-width="4"/><circle cx="26" cy="26" r="22" stroke="var(--red)" stroke-width="4" stroke-linecap="round" class="wiz-gen-ring" transform="rotate(-90 26 26)"/><path d="M18 24 L14 19 L22 19" stroke="#e53935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 28 L14 23 L22 23" stroke="#e53935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/></svg></div>
+    <div class="wiz-gen-label" id="gen-label">${steps[0].label}</div>
+    <div class="wiz-gen-track"><div class="wiz-gen-fill" id="gen-fill"></div></div>
+  </div>`;
+  let i=0;const fill=document.getElementById('gen-fill');const lbl=document.getElementById('gen-label');
+  const iv=[1200,1600,1600,1200,800];
+  function next(){if(!fill||!lbl)return;fill.style.width=steps[i].pct+'%';lbl.style.opacity='0';setTimeout(()=>{if(lbl){lbl.textContent=steps[i].label;lbl.style.opacity='1';}},150);i++;if(i<steps.length)setTimeout(next,iv[i-1]);else setTimeout(()=>finishTemplate(name,date,_activeTmpl?.id),600);}
+  setTimeout(next,100);
+}
+
+function finishTemplate(name,date,tmplId){
+  const builders={
+    'hyrox-12':buildTmplHyrox,'sprint-14':buildTmplSprintTri,
+    '703-24':buildTmpl703,'full-im-32':buildTmplFullIM,
+    'half-16':buildTmplHalfMarathon,'full-20':buildTmplFullMarathon,
+  };
+  const fn=builders[tmplId];
+  if(fn){const r=fn(name,date);DATA.races.push(r);save();}
+  document.getElementById('wiz-overlay').classList.remove('open');
+  ['btn-wiz-back','btn-wiz-next'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
+  const x=document.querySelector('.wiz-x');if(x)x.style.display='';
+  const sr=document.getElementById('wiz-steps-row');if(sr)sr.style.display='';
+  renderSidebar();showHub();
+}
+
+// ─── TEMPLATE BUILDERS ───────────────────────────────────────────
+function _tmplWeeks(sd,phases){
+  let wi=0;const weeks=[];
+  phases.forEach(({id,rows})=>rows.forEach(r=>{
+    const{note='',rec=false,brick=false,...days}=r;
+    weeks.push({weekNum:++wi,dates:weekRange(sd,wi-1),sessions:days,note,isRecovery:!!rec,brick:!!brick,phase:id});
+  }));
+  return weeks;
+}
+function _race(overrides){return{id:'tmpl-'+Date.now(),log:{},...overrides};}
+
+function buildTmplHyrox(name,date){
+  const sd=planStartDate(date,12);
+  const weeks=_tmplWeeks(sd,[
+    {id:'base',rows:[
+      {Mon:'30 min easy run',Wed:'Gym 45 min — SkiErg 3×200m · Sled Push 3×25m · Wall Balls 3×15',Sat:'40 min easy run + Gym circuit (Farmers Carry · Burpee Broad Jump)',note:'Intro week'},
+      {Mon:'33 min easy run',Wed:'Gym 50 min — SkiErg 4×200m · Sled Push 4×25m · Rowing 3×300m',Sat:'42 min easy run + Gym circuit'},
+      {Mon:'35 min easy run + strides',Wed:'Gym 55 min — 2-round Hyrox sim (light load)',Sat:'45 min easy run + Gym circuit',note:'First simulation'},
+      {Mon:'25 min easy run',Wed:'Gym 35 min light — technique only',Sat:'30 min easy run',rec:true},
+    ]},
+    {id:'build',rows:[
+      {Mon:'35 min easy + strides',Tue:'Strength 45 min (squat · deadlift · hip thrust · plank)',Wed:'Gym 60 min — 3-round Hyrox sim',Sat:'50 min easy run + full circuit'},
+      {Mon:'38 min easy + strides',Tue:'Strength 45 min',Wed:'Gym 65 min — 4-round Hyrox sim',Sat:'52 min easy run + full circuit'},
+      {Mon:'40 min easy + strides',Tue:'Strength 50 min',Wed:'Gym 70 min — 5-round Hyrox sim',Sat:'55 min easy run + full circuit',note:'Longest sim yet'},
+      {Mon:'28 min easy run',Tue:'Strength 30 min light',Wed:'Gym 40 min easy',Sat:'35 min easy run',rec:true},
+    ]},
+    {id:'peak',rows:[
+      {Mon:'40 min easy run',Tue:'Strength 50 min',Wed:'Gym — 6-round Hyrox sim + 6 km running',Fri:'25 min easy',Sat:'Race sim: 8 rounds + 8×1 km run'},
+      {Mon:'38 min easy run',Tue:'Strength 45 min',Wed:'Gym — Full 8-round race simulation',Sat:'45 min easy run',note:'Final high block'},
+    ]},
+    {id:'taper',rows:[
+      {Mon:'30 min easy run',Wed:'Gym 40 min light — station touch-up',Sat:'25 min easy run + light stations'},
+      {Mon:'20 min easy run',Wed:'Gym 25 min — loosen up',Sat:'15 min shake-out run'},
+    ]},
+  ]);
+  return _race({name:name||'Hyrox Plan',type:'hyrox',date,goal:'Sub-90 min',goalNote:'Complete all 8 rounds strong',startDate:sd,
+    splits:[{label:'Total',dist:'8 km + 8 stations',time:'1:30:00',pace:'Target',cls:'run'}],
+    profile:{Level:'Beginner–Intermediate','Weekly sessions':'3–4','Strength':'2×/week','Key focus':'Station efficiency + run fitness'},
+    phases:[
+      {id:'base',name:'Base',dates:'Weeks 1–4',desc:'Build running base. Learn all 8 stations with correct form.',weeks:weeks.filter(w=>w.phase==='base'),note:'Goal: complete all stations with correct form at light load'},
+      {id:'build',name:'Build',dates:'Weeks 5–8',desc:'Add strength. Increase sim rounds. Race-pace running under fatigue.',weeks:weeks.filter(w=>w.phase==='build'),note:'Goal: complete 5-round sim without stopping'},
+      {id:'peak',name:'Peak',dates:'Weeks 9–10',desc:'Full race simulations. Maximum readiness.',weeks:weeks.filter(w=>w.phase==='peak'),note:'8-round simulation is the most important session of this plan'},
+      {id:'taper',name:'Taper',dates:'Weeks 11–12',desc:'Volume drops. Keep intensity. Arrive sharp.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Feeling flat is normal — your body is loading up for race day'},
+    ],
+    gear:[{group:'Race Day',color:'var(--hyrox)',items:['Trainers (low-drop)','Knee sleeves (optional)','GPS watch','Chalk (grip)','Water bottle']}],
+    zones:[{z:'Z2',name:'Easy Run',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo / Station pace',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Race effort',pct:'83–89%',rpe:'7–8',feel:'Hard, controlled',color:'var(--z4)'}],
+    notes:'Coach note: Hyrox rewards consistent station practice over raw fitness. Never skip Wednesday gym — it is the heart of this plan. Transitions and pacing win races.',
+  });
+}
+
+function buildTmplSprintTri(name,date){
+  const sd=planStartDate(date,14);
+  const weeks=_tmplWeeks(sd,[
+    {id:'base',rows:[
+      {Mon:'Swim 25 min (technique drills)',Wed:'30 min easy run + Strength 30 min (core · hip stability · single-leg)',Thu:'Bike 40 min easy Z2',Sat:'Swim 25 min + 15 min easy run (mini-brick)',note:'Intro week'},
+      {Mon:'Swim 28 min',Wed:'32 min easy run + Strength 35 min',Thu:'Bike 45 min easy Z2',Sat:'Swim 28 min + 18 min easy run',brick:true},
+      {Mon:'Swim 30 min (drills + easy sets)',Wed:'35 min easy run + Strength 35 min',Thu:'Bike 50 min easy',Sat:'Brick: 40 min bike + 20 min run',brick:true},
+      {Mon:'Swim 20 min easy',Wed:'25 min easy run',Thu:'Bike 30 min easy',Sat:'Swim 20 min',rec:true},
+      {Mon:'Swim 30 min',Wed:'38 min easy run + Strength 35 min',Thu:'Bike 55 min',Sat:'Brick: 45 min bike + 20 min run',brick:true},
+    ]},
+    {id:'build',rows:[
+      {Mon:'Swim 35 min (interval sets)',Tue:'Bike 50 min Z2',Wed:'Strength 40 min + 25 min tempo run',Fri:'Swim 30 min',Sat:'Brick: 50 min bike + 20 min run',brick:true},
+      {Mon:'Swim 35 min (race-pace sets)',Tue:'Bike 55 min',Wed:'Strength 40 min + 28 min tempo',Fri:'Swim 35 min',Sat:'Brick: 55 min bike + 22 min run',brick:true},
+      {Mon:'Swim 38 min',Tue:'Bike 60 min',Wed:'Strength 45 min + 30 min tempo',Fri:'Swim 35 min',Sat:'Brick: 60 min bike + 25 min run',brick:true},
+      {Mon:'Swim 25 min easy',Tue:'Bike 40 min easy',Wed:'Strength light 30 min',Fri:'Swim 25 min',Sat:'40 min bike + 15 min run',rec:true},
+      {Mon:'Swim 40 min (race-pace sets)',Tue:'Bike 60 min',Wed:'Strength 45 min + 30 min tempo',Fri:'Swim 38 min',Sat:'Brick: 60 min bike + 25 min run',brick:true,note:'Biggest brick week'},
+    ]},
+    {id:'peak',rows:[
+      {Mon:'Swim 35 min race-pace sim',Tue:'Bike 55 min race pace',Wed:'Strength 40 min + 25 min race-pace run',Fri:'Swim 30 min',Sat:'Full sprint tri distance simulation',brick:true},
+      {Mon:'Swim 30 min',Tue:'Bike 45 min',Wed:'Strength light + 20 min easy run',Fri:'Swim 25 min',Sat:'Brick: 40 min bike + 15 min run'},
+    ]},
+    {id:'taper',rows:[
+      {Mon:'Swim 22 min',Wed:'20 min easy run',Thu:'Bike 30 min easy',Sat:'Mini-brick: 25 min bike + 10 min run'},
+      {Mon:'Swim 15 min',Wed:'12 min easy run',Thu:'Bike 20 min easy',Sat:'10 min shake-out run'},
+    ]},
+  ]);
+  return _race({name:name||'Sprint Tri Plan',type:'tri-sprint',date,goal:'Finish strong',goalNote:'Swim 750m · Bike 20km · Run 5km',startDate:sd,
+    splits:[{label:'Swim',dist:'750m',time:'0:18',pace:'2:20/100m',cls:'swim'},{label:'Bike',dist:'20 km',time:'0:40',pace:'30 km/h',cls:'bike'},{label:'Run',dist:'5 km',time:'0:28',pace:'5:35/km',cls:'run'}],
+    profile:{Level:'Beginner–Intermediate',Swim:'Comfortable 400–600m',Bike:'Casual rider','Weekly hrs':'5–7','Strength':'2×/week'},
+    phases:[
+      {id:'base',name:'Base',dates:'Weeks 1–5',desc:'Build aerobic base in all 3 disciplines. Strength foundation.',weeks:weeks.filter(w=>w.phase==='base'),note:'Complete 40 min bike + 20 min run comfortably'},
+      {id:'build',name:'Build',dates:'Weeks 6–10',desc:'Race-pace swim sets. Brick sessions. Strength under fatigue.',weeks:weeks.filter(w=>w.phase==='build'),note:'Complete full distance brick comfortably'},
+      {id:'peak',name:'Peak',dates:'Weeks 11–12',desc:'Full race distance simulation. Maximum sharpness.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Race sim is the highest-value session of the plan'},
+      {id:'taper',name:'Taper',dates:'Weeks 13–14',desc:'Volume drops 50%. Keep intensity. Trust your training.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Light, sharp, and fresh on race day'},
+    ],
+    gear:[{group:'Swim',color:'var(--swim)',items:['Wetsuit (check water temp rules)','Goggles (+ spare)','Anti-chafe cream']},{group:'Bike',color:'var(--bike)',items:['Road bike + helmet','Cycling shoes','1 water bottle','CO2 + spare tube']},{group:'Run',color:'var(--run)',items:['Race shoes','Race belt','Cap or visor','1–2 gels']}],
+    zones:[{z:'Z2',name:'Aerobic',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Threshold',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],
+    notes:'Coach note: Sprint tri rewards speed and efficiency. Nail your T1 and T2 transitions in training. Start the bike conservatively — the run will feel awful if you overcook it.',
+  });
+}
+
+function buildTmpl703(name,date){
+  const sd=planStartDate(date,24);
+  const weeks=_tmplWeeks(sd,[
+    {id:'base',rows:[
+      {Mon:'Swim 40 min (AM) + 35 min easy run',Tue:'Bike 60 min easy Z2',Wed:'Strength 45 min (deadlift · squat · shoulder press · plank)',Fri:'Swim 40 min',Sat:'90 min Z2 ride',note:'Intro week — feel it out'},
+      {Mon:'Swim 42 min (AM) + 38 min easy run',Tue:'Bike 65 min easy',Wed:'Strength 45 min',Fri:'Swim 43 min',Sat:'1:45 Z2 ride'},
+      {Mon:'Swim 45 min (AM) + 40 min easy run',Tue:'Bike 70 min easy',Wed:'Strength 50 min',Fri:'Swim 45 min',Sat:'2:00 Z2 ride'},
+      {Mon:'Swim 35 min (AM) + 30 min easy',Tue:'Bike 50 min easy',Wed:'Strength 35 min light',Fri:'Swim 35 min easy',Sat:'75 min Z2',rec:true},
+      {Mon:'Swim 45 min (AM) + 43 min + strides',Tue:'Bike 70 min easy',Wed:'Strength 50 min',Fri:'Swim 45 min + drills',Sat:'2:00 Z2 ride'},
+      {Mon:'Swim 48 min (AM) + 45 min + strides',Tue:'Bike 75 min easy',Wed:'Strength 50 min',Fri:'Swim 48 min',Sat:'2:15 Z2'},
+      {Mon:'Swim 50 min (AM) + 48 min + strides',Tue:'Bike 75 min Z2',Wed:'Strength 55 min',Fri:'Swim 50 min + OW drills',Sat:'2:30 Z2'},
+      {Mon:'Swim 40 min (AM) + 35 min easy',Tue:'Bike 55 min easy',Wed:'Strength 35 min light',Fri:'Swim 40 min easy',Sat:'90 min easy',rec:true},
+    ]},
+    {id:'build',rows:[
+      {Mon:'Swim 50 min (AM) + 48 min + strides',Tue:'Bike 80 min (BUILD-1)',Wed:'Strength 50 min',Fri:'Swim 50 min — OW practice',Sat:'2:00 bike + 15 min run',brick:true,note:'First brick'},
+      {Mon:'Swim 52 min (AM) + 50 min + strides',Tue:'Bike 80 min (BUILD-1)',Wed:'Strength 50 min',Fri:'Swim 52 min',Sat:'2:15 bike + 20 min run',brick:true},
+      {Mon:'Swim 55 min (AM) + 52 min easy',Tue:'Bike 85 min (BUILD-2)',Wed:'Strength 55 min',Fri:'Swim 55 min — interval sets',Sat:'2:30 bike + 20 min run',brick:true},
+      {Mon:'Swim 42 min (AM) + 38 min easy',Tue:'Bike 60 min easy',Wed:'Strength 35 min light',Fri:'Swim 42 min easy',Sat:'90 min easy',rec:true},
+      {Mon:'Swim 55 min (AM) + 52 min + strides',Tue:'Bike 85 min (BUILD-2)',Wed:'Strength 55 min',Fri:'Swim 55 min — threshold sets',Sat:'2:30 bike + 25 min run',brick:true},
+      {Mon:'Swim 58 min (AM) + 55 min easy',Tue:'Bike 90 min (BUILD-3)',Wed:'Strength 55 min',Fri:'Swim 58 min — race-pace sets',Sat:'2:45 bike + 25 min run',brick:true,note:'Biggest brick yet'},
+      {Mon:'Swim 58 min (AM) + 55 min + strides',Tue:'Bike 90 min (BUILD-3)',Wed:'Strength 55 min',Fri:'Swim 58 min — wetsuit practice',Sat:'2:45 bike + 28 min run',brick:true},
+      {Mon:'Swim 42 min (AM) + 38 min easy',Tue:'Bike 60 min easy',Wed:'Strength 35 min light',Fri:'Swim 42 min easy',Sat:'90 min easy',rec:true},
+    ]},
+    {id:'peak',rows:[
+      {Mon:'Swim 60 min OW (AM) + 58 min + strides',Tue:'Bike 90 min peak',Wed:'Strength 50 min',Fri:'Swim 60 min — race pace',Sat:'2:45 bike + 30 min run',brick:true},
+      {Mon:'Swim 60 min OW (AM) + 58 min race pace',Tue:'Bike 95 min peak',Wed:'Strength 50 min',Fri:'Swim 60 min — race sim',Sat:'3:00 bike + 32 min run',note:'Peak volume',brick:true},
+      {Mon:'Swim 62 min OW (AM) + 60 min race pace',Tue:'Bike 95 min peak',Wed:'Strength 50 min',Fri:'Swim 62 min — race sim',Sat:'3:00 bike + 35 min run',note:'Peak volume',brick:true},
+      {Mon:'Swim 48 min (AM) + 40 min easy',Tue:'Bike 65 min easy',Wed:'Strength 35 min light',Fri:'Swim 45 min easy',Sat:'Race simulation day',note:'Most important day of the plan',rec:true},
+      {Mon:'Swim 55 min (AM) + 58 min race pace',Tue:'Bike 88 min',Wed:'Strength 45 min',Fri:'Swim 55 min — threshold sets',Sat:'2:45 bike + 30 min run',brick:true,note:'Final big block'},
+      {Mon:'Swim 50 min (AM) + 52 min easy',Tue:'Bike 80 min',Wed:'Strength 40 min',Fri:'Swim 50 min easy',Sat:'2:00 bike + 20 min run',note:'Taper begins',brick:true},
+    ]},
+    {id:'taper',rows:[
+      {Mon:'Swim 40 min (AM) + 48 min (10 min race pace)',Tue:'Bike 72 min easy',Wed:'Strength 30 min light',Fri:'Swim 40 min easy',Sat:'1:45 Z2 + 15 min run',note:'-25% volume'},
+      {Mon:'Swim 35 min (AM) + 38 min (10 min race pace)',Tue:'Bike 60 min easy',Wed:'Strength 25 min',Fri:'Swim 35 min easy',Sat:'60 min easy',note:'-40% volume'},
+      {Mon:'Swim 28 min (AM) + 28 min + strides',Tue:'Bike 45 min easy',Wed:'Stretch + 20 min easy run',Fri:'Swim 20 min easy',Sat:'45 min easy ride + 15 min shake-out',note:'-50% volume'},
+    ]},
+  ]);
+  return _race({name:name||'Ironman 70.3 Plan',type:'tri-703',date,goal:'Sub-6:30',goalNote:'Swim 0:48 · Bike 3:05 · Run 2:17',startDate:sd,
+    splits:[{label:'Swim',dist:'1.9 km',time:'0:48',pace:'2:30/100m',cls:'swim'},{label:'Bike',dist:'90 km',time:'3:05',pace:'29 km/h',cls:'bike'},{label:'Run',dist:'21.1 km',time:'2:17',pace:'6:30/km',cls:'run'},{label:'Total',dist:'+20 min T1/T2',time:'6:30',pace:'Sub-6:30 target',cls:'total'}],
+    profile:{Level:'Beginner–Intermediate',Swim:'Comfortable 1–2 km','Weekly hrs':'8–10','Strength':'2×/week — compound lifts + stability'},
+    phases:[
+      {id:'base',name:'The Foundation',dates:'Weeks 1–8',desc:'Build aerobic base. All Z2. Establish strength habits.',weeks:weeks.filter(w=>w.phase==='base'),note:'Comfortable 2 hr ride · 45 min easy run · 1 km swim continuous'},
+      {id:'build',name:'The Forge',dates:'Weeks 9–16',desc:'First bricks. FTP intervals. Tempo runs. Strength under load.',weeks:weeks.filter(w=>w.phase==='build'),note:'2:45 bike + 30 min run · 1.9 km swim continuous'},
+      {id:'peak',name:'The Summit',dates:'Weeks 17–22',desc:'Peak volume. Race simulation. Strength maintenance.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Race simulation week is the single most important session of the plan'},
+      {id:'taper',name:'The Approach',dates:'Weeks 23–24',desc:'Volume drops. Intensity stays. Strength cut to maintenance.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Feeling flat is adaptation doing its job. Do not add extra sessions.'},
+    ],
+    gear:[{group:'Swim',color:'var(--swim)',items:['Wetsuit','Goggles (+ spare)','Anti-chafe cream','Swim cap']},{group:'Bike',color:'var(--bike)',items:['Road/TT bike + helmet','Cycling shoes','2 bottles + nutrition','CO2 + 2 spare tubes']},{group:'Run',color:'var(--run)',items:['Tri/race shoes','Race belt','Cap or visor','2–3 gels']}],
+    zones:[{z:'Z1',name:'Recovery',pct:'<68%',rpe:'1–2',feel:'Stroll in the park',color:'var(--z1)'},{z:'Z2',name:'Aerobic',pct:'68–75%',rpe:'3–4',feel:'Full conversation, all day',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Threshold',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],
+    notes:'Coach note: Strength training in a tri plan is non-negotiable. Compound lifts (deadlift, squat, hip thrust) prevent injury and improve power transfer on the bike. Never skip strength in base phase — it is harder to add later.',
+  });
+}
+
+function buildTmplFullIM(name,date){
+  const sd=planStartDate(date,32);
+  const phaseW=(rows,id)=>rows.map((r,i)=>{const{note='',rec=false,brick=false,...days}=r;return{weekNum:0,dates:'',sessions:days,note,isRecovery:!!rec,brick:!!brick,phase:id};});
+  let wi=0;
+  const all=[
+    ...phaseW([
+      {Mon:'Swim 40 min + 30 min easy run',Tue:'Bike 60 min easy',Wed:'Strength 45 min',Fri:'Swim 40 min',Sat:'1:30 Z2',note:'Intro'},
+      {Mon:'Swim 45 min + 35 min easy run',Tue:'Bike 65 min',Wed:'Strength 50 min',Fri:'Swim 45 min',Sat:'1:45 Z2'},
+      {Mon:'Swim 48 min + 38 min easy',Tue:'Bike 70 min',Wed:'Strength 50 min',Fri:'Swim 48 min',Sat:'2:00 Z2'},
+      {Mon:'Swim 35 min + 28 min easy',Tue:'Bike 50 min easy',Wed:'Strength 30 min',Fri:'Swim 35 min',Sat:'75 min easy',rec:true},
+      {Mon:'Swim 50 min + 40 min + strides',Tue:'Bike 75 min',Wed:'Strength 50 min',Fri:'Swim 50 min',Sat:'2:15 Z2'},
+      {Mon:'Swim 52 min + 42 min + strides',Tue:'Bike 80 min',Wed:'Strength 55 min',Fri:'Swim 52 min',Sat:'2:30 Z2'},
+      {Mon:'Swim 55 min + 45 min + strides',Tue:'Bike 80 min',Wed:'Strength 55 min',Fri:'Swim 55 min + OW',Sat:'2:45 Z2'},
+      {Mon:'Swim 40 min + 32 min easy',Tue:'Bike 55 min easy',Wed:'Strength 35 min',Fri:'Swim 40 min',Sat:'90 min easy',rec:true},
+    ],'base'),
+    ...phaseW([
+      {Mon:'Swim 55 min + 48 min + strides',Tue:'Bike 85 min',Wed:'Strength 55 min',Thu:'45 min easy run',Fri:'Swim 55 min',Sat:'3:00 Z2',Sun:'50 min easy run'},
+      {Mon:'Swim 58 min + 50 min + strides',Tue:'Bike 90 min',Wed:'Strength 55 min',Thu:'48 min easy run',Fri:'Swim 58 min',Sat:'3:15 Z2',Sun:'55 min easy run'},
+      {Mon:'Swim 60 min + 52 min easy',Tue:'Bike 95 min',Wed:'Strength 60 min',Thu:'50 min easy run',Fri:'Swim 60 min',Sat:'2:30 bike + 20 min run',Sun:'60 min easy run',brick:true},
+      {Mon:'Swim 42 min + 35 min easy',Tue:'Bike 60 min easy',Wed:'Strength 35 min',Thu:'30 min easy',Fri:'Swim 42 min',Sat:'90 min easy',rec:true},
+      {Mon:'Swim 60 min + 55 min + strides',Tue:'Bike 100 min',Wed:'Strength 60 min',Thu:'52 min easy',Fri:'Swim 60 min',Sat:'3:30 Z2',Sun:'65 min easy run'},
+      {Mon:'Swim 62 min + 58 min + strides',Tue:'Bike 105 min',Wed:'Strength 60 min',Thu:'55 min easy',Fri:'Swim 62 min',Sat:'3:00 bike + 25 min run',Sun:'70 min easy run',brick:true},
+      {Mon:'Swim 65 min + 60 min tempo',Tue:'Bike 110 min',Wed:'Strength 55 min',Thu:'58 min easy',Fri:'Swim 65 min',Sat:'3:30 bike + 30 min run',Sun:'75 min easy run',brick:true,note:'High load week'},
+      {Mon:'Swim 45 min + 38 min easy',Tue:'Bike 65 min easy',Wed:'Strength 35 min',Thu:'32 min easy',Fri:'Swim 45 min',Sat:'2:00 easy',Sun:'55 min easy',rec:true},
+    ],'build'),
+    ...phaseW([
+      {Mon:'Swim 65 min OW + 60 min race pace',Tue:'Bike 110 min peak',Wed:'Strength 55 min',Thu:'60 min steady',Fri:'Swim 65 min',Sat:'3:30 bike + 35 min run',Sun:'80 min long run',brick:true},
+      {Mon:'Swim 68 min OW + 62 min race pace',Tue:'Bike 115 min peak',Wed:'Strength 55 min',Thu:'62 min steady',Fri:'Swim 68 min',Sat:'4:00 bike + 40 min run',Sun:'90 min long run',note:'Peak volume',brick:true},
+      {Mon:'Swim 70 min OW + 65 min race pace',Tue:'Bike 120 min peak',Wed:'Strength 50 min',Thu:'65 min steady',Fri:'Swim 70 min',Sat:'4:30 bike + 45 min run',Sun:'100 min long run',note:'Highest volume week',brick:true},
+      {Mon:'Swim 50 min + 42 min easy',Tue:'Bike 70 min easy',Wed:'Strength 35 min',Thu:'35 min easy',Fri:'Swim 50 min easy',Sat:'Race simulation (90 min swim · 90 min bike · 45 min run)',note:'Most important day of the plan',rec:true,brick:true},
+      {Mon:'Swim 65 min + 60 min race pace',Tue:'Bike 110 min',Wed:'Strength 45 min',Thu:'58 min steady',Fri:'Swim 62 min',Sat:'4:00 bike + 40 min run',Sun:'85 min long run',note:'Final big block',brick:true},
+      {Mon:'Swim 58 min + 52 min easy',Tue:'Bike 95 min',Wed:'Strength 40 min',Thu:'50 min easy',Fri:'Swim 55 min easy',Sat:'3:00 bike + 30 min run',Sun:'70 min easy',note:'Taper begins',brick:true},
+    ],'peak'),
+    ...phaseW([
+      {Mon:'Swim 42 min + 45 min (12 min race pace)',Tue:'Bike 75 min easy',Wed:'Strength 25 min',Thu:'40 min easy',Fri:'Swim 40 min easy',Sat:'2:30 easy + 20 min run',note:'-25% volume'},
+      {Mon:'Swim 35 min + 38 min (10 min race pace)',Tue:'Bike 60 min easy',Wed:'Strength 20 min',Thu:'32 min easy',Fri:'Swim 30 min easy',Sat:'1:45 easy + 15 min run',note:'-40% volume'},
+      {Mon:'Swim 28 min + 28 min + strides',Tue:'Bike 45 min easy',Wed:'20 min easy + stretch',Thu:'20 min easy',Fri:'Swim 20 min easy',Sat:'60 min easy ride + 15 min shake-out',note:'-55% volume'},
+    ],'taper'),
+  ];
+  all.forEach(w=>{w.weekNum=++wi;w.dates=weekRange(sd,wi-1);});
+  return _race({name:name||'Ironman Full Plan',type:'tri-full',date,goal:'Sub-13:00',goalNote:'Swim 1:25 · Bike 6:30 · Run 4:30',startDate:sd,
+    splits:[{label:'Swim',dist:'3.8 km',time:'1:25',pace:'2:25/100m',cls:'swim'},{label:'Bike',dist:'180 km',time:'6:30',pace:'28 km/h',cls:'bike'},{label:'Run',dist:'42.2 km',time:'4:30',pace:'6:24/km',cls:'run'}],
+    profile:{Level:'Beginner–Intermediate','Weekly hrs':'10–14','Strength':'2×/week'},
+    phases:[
+      {id:'base',name:'Base',dates:'Weeks 1–8',desc:'Aerobic base. Establish strength. Volume over intensity.',weeks:all.filter(w=>w.phase==='base'),note:'Comfortable 3 hr ride · 60 min easy run · 2 km swim'},
+      {id:'build',name:'Build',dates:'Weeks 9–16',desc:'Bricks. Tempo. Run volume builds. Strength under fatigue.',weeks:all.filter(w=>w.phase==='build'),note:'4:30 bike + 45 min run · 3.8 km swim continuous'},
+      {id:'peak',name:'Peak',dates:'Weeks 17–22',desc:'Maximum volume. Race simulation. Final strength block.',weeks:all.filter(w=>w.phase==='peak'),note:'Full race sim week is the pivotal session of the entire plan'},
+      {id:'taper',name:'Taper',dates:'Weeks 23–25',desc:'Volume drops sharply. Intensity stays. Trust everything.',weeks:all.filter(w=>w.phase==='taper'),note:'Sleep 9+ hrs. Eat well. Every sensation is normal.'},
+    ],
+    gear:[{group:'Swim',color:'var(--swim)',items:['Wetsuit','Goggles (+ 2 spares)','Anti-chafe (thorough)','Swim cap']},{group:'Bike',color:'var(--bike)',items:['Tri bike + aero helmet','Cycling shoes','4+ bottles + nutrition plan','CO2 + 3 spare tubes','Bike computer']},{group:'Run',color:'var(--run)',items:['Tri/race shoes (broken in)','Race belt','Cap or visor','6–8 gels (tested)','Electrolytes','Anti-chafe cream']}],
+    zones:[{z:'Z1',name:'Recovery',pct:'<68%',rpe:'1–2',feel:'Stroll',color:'var(--z1)'},{z:'Z2',name:'Aerobic',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Sentences only',color:'var(--z3)'},{z:'Z4',name:'Threshold',pct:'83–89%',rpe:'7–8',feel:'One or two words',color:'var(--z4)'}],
+    notes:'Coach note: Full Ironman is 95% nutrition and pacing and 5% fitness on race day. Practice your race nutrition (gels, bars, electrolytes) in training from Week 10. Never try anything new on race day. Sleep and recovery are training.',
+  });
+}
+
+function buildTmplHalfMarathon(name,date){
+  const sd=planStartDate(date,16);
+  const weeks=_tmplWeeks(sd,[
+    {id:'base',rows:[
+      {Mon:'35 min easy run',Tue:'Strength 40 min (squat · RDL · lunges · plank)',Thu:'30 min easy run',Sat:'55 min long run (Z2)',note:'Intro week'},
+      {Mon:'38 min easy run',Tue:'Strength 40 min',Thu:'32 min easy run',Sat:'65 min long run'},
+      {Mon:'40 min easy run',Tue:'Strength 45 min',Thu:'35 min easy run',Sat:'75 min long run'},
+      {Mon:'30 min easy run',Tue:'Strength 30 min light',Thu:'25 min easy run',Sat:'50 min easy run',rec:true},
+      {Mon:'42 min easy + strides',Tue:'Strength 45 min',Thu:'38 min easy run',Sat:'80 min long run'},
+      {Mon:'45 min easy + strides',Tue:'Strength 45 min',Thu:'40 min easy run',Sat:'88 min long run'},
+      {Mon:'48 min easy + strides',Tue:'Strength 50 min',Thu:'42 min easy run',Sat:'95 min long run'},
+      {Mon:'35 min easy run',Tue:'Strength 30 min',Thu:'28 min easy run',Sat:'65 min easy run',rec:true},
+    ]},
+    {id:'build',rows:[
+      {Mon:'48 min easy run',Tue:'Strength 45 min',Wed:'40 min tempo (Z3)',Sat:'100 min long run'},
+      {Mon:'50 min easy run',Tue:'Strength 45 min',Wed:'45 min tempo (Z3)',Sat:'105 min long run'},
+      {Mon:'52 min easy run',Tue:'Strength 50 min',Wed:'48 min tempo (Z3)',Sat:'110 min (last 20 min race pace)'},
+      {Mon:'38 min easy run',Tue:'Strength 30 min',Wed:'28 min easy run',Sat:'70 min easy run',rec:true},
+    ]},
+    {id:'peak',rows:[
+      {Mon:'52 min easy run',Tue:'Strength 45 min',Wed:'5×1000m @ Z4 (90s rest)',Sat:'105 min (25 min race pace)',note:'First real intervals'},
+      {Mon:'52 min easy run',Tue:'Strength 45 min',Wed:'6×1000m @ Z4 (90s rest)',Sat:'110 min (30 min race pace)'},
+    ]},
+    {id:'taper',rows:[
+      {Mon:'40 min easy run',Tue:'Strength 30 min light',Wed:'30 min easy + strides',Sat:'65 min easy run',note:'-30% volume'},
+      {Mon:'32 min (8 min race pace)',Tue:'Strength 20 min light',Wed:'25 min easy + strides',Sat:'45 min easy run',note:'-50% volume'},
+    ]},
+  ]);
+  return _race({name:name||'Half Marathon Plan',type:'run-half',date,goal:'Sub-2:10',goalNote:'Target pace: ~6:10/km',startDate:sd,
+    splits:[{label:'Run',dist:'21.1 km',time:'2:10:00',pace:'6:10/km',cls:'run'}],
+    profile:{Level:'Beginner–Intermediate','Weekly runs':'4','Strength':'2×/week','Long run':'up to 110 min'},
+    phases:[
+      {id:'base',name:'Base',dates:'Weeks 1–8',desc:'Easy aerobic miles. Strength foundation. Consistent long runs.',weeks:weeks.filter(w=>w.phase==='base'),note:'Comfortable 90 min long run at Z2'},
+      {id:'build',name:'Build',dates:'Weeks 9–12',desc:'Tempo runs. Long run with race-pace sections.',weeks:weeks.filter(w=>w.phase==='build'),note:'Holding tempo for 45 min comfortably'},
+      {id:'peak',name:'Peak',dates:'Weeks 13–14',desc:'Interval sessions. Peak mileage. Strength maintenance.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Best fitness of the plan — trust what you have built'},
+      {id:'taper',name:'Taper',dates:'Weeks 15–16',desc:'Volume drops. Intensity stays. Arrive sharp.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Feeling flat? Perfect. Your legs are consolidating.'},
+    ],
+    gear:[{group:'Race Day',color:'var(--run)',items:['Race shoes (broken in, not new)','Race number + belt','Cap or visor','GPS watch','2–3 gels (tested)','Electrolytes','Anti-chafe cream']}],
+    zones:[{z:'Z2',name:'Easy / Long Run',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Short sentences',color:'var(--z3)'},{z:'Z4',name:'Intervals',pct:'83–89%',rpe:'7–8',feel:'~5:20/km effort',color:'var(--z4)'}],
+    notes:'Coach note: Strength training is the most overlooked part of marathon prep. Hip stability (single-leg work, glute med) prevents the most common running injuries. Do not skip Tuesday — it protects all the other sessions.',
+  });
+}
+
+function buildTmplFullMarathon(name,date){
+  const sd=planStartDate(date,20);
+  const weeks=_tmplWeeks(sd,[
+    {id:'base',rows:[
+      {Mon:'38 min easy run',Tue:'Strength 45 min (squat · RDL · hip thrust · calf raises)',Thu:'32 min easy run',Sat:'60 min long run',note:'Intro week'},
+      {Mon:'40 min easy run',Tue:'Strength 45 min',Thu:'35 min easy run',Sat:'70 min long run'},
+      {Mon:'42 min easy run',Tue:'Strength 50 min',Thu:'38 min easy run',Sat:'80 min long run'},
+      {Mon:'32 min easy run',Tue:'Strength 30 min light',Thu:'26 min easy run',Sat:'55 min easy run',rec:true},
+      {Mon:'45 min easy + strides',Tue:'Strength 50 min',Thu:'40 min easy run',Sat:'90 min long run'},
+      {Mon:'48 min easy + strides',Tue:'Strength 50 min',Thu:'42 min easy run',Sat:'100 min long run'},
+      {Mon:'50 min easy + strides',Tue:'Strength 55 min',Thu:'45 min easy run',Sat:'110 min long run'},
+      {Mon:'38 min easy run',Tue:'Strength 35 min',Thu:'30 min easy run',Sat:'70 min easy run',rec:true},
+    ]},
+    {id:'build',rows:[
+      {Mon:'50 min easy run',Tue:'Strength 50 min',Wed:'40 min tempo (Z3)',Thu:'38 min easy run',Sat:'2:00 long run'},
+      {Mon:'52 min easy run',Tue:'Strength 50 min',Wed:'45 min tempo (Z3)',Thu:'40 min easy run',Sat:'2:10 long run'},
+      {Mon:'55 min easy run',Tue:'Strength 55 min',Wed:'48 min tempo (Z3)',Thu:'42 min easy run',Sat:'2:20 long run'},
+      {Mon:'40 min easy run',Tue:'Strength 35 min',Wed:'30 min easy run',Thu:'28 min easy run',Sat:'80 min easy run',rec:true},
+      {Mon:'55 min easy run',Tue:'Strength 55 min',Wed:'50 min tempo (Z3)',Thu:'45 min easy run',Sat:'2:30 long run'},
+      {Mon:'58 min easy run',Tue:'Strength 55 min',Wed:'55 min tempo (Z3)',Thu:'48 min easy run',Sat:'2:40 long run (last 30 min Z3)'},
+    ]},
+    {id:'peak',rows:[
+      {Mon:'58 min easy run',Tue:'Strength 50 min',Wed:'5×1200m @ Z4 (2 min rest)',Thu:'50 min easy run',Sat:'2:50 long run (30 min race pace)',note:'First long intervals'},
+      {Mon:'60 min easy run',Tue:'Strength 50 min',Wed:'6×1200m @ Z4',Thu:'52 min easy run',Sat:'3:00 long run (35 min race pace)'},
+      {Mon:'60 min easy run',Tue:'Strength 50 min',Wed:'7×1000m @ Z4',Thu:'52 min easy run',Sat:'3:00 long run (last 20 km at race pace)',note:'Longest run'},
+      {Mon:'48 min easy run',Tue:'Strength 35 min',Wed:'32 min easy + strides',Thu:'28 min easy',Sat:'2:00 easy long run',note:'Taper begins'},
+    ]},
+    {id:'taper',rows:[
+      {Mon:'42 min easy run (10 min race pace)',Tue:'Strength 25 min light',Wed:'35 min easy + strides',Thu:'28 min easy',Sat:'80 min easy long run',note:'-30% volume'},
+      {Mon:'35 min easy (10 min race pace)',Tue:'Strength 20 min light',Wed:'28 min easy + strides',Thu:'20 min easy',Sat:'55 min easy run',note:'-50% volume'},
+      {Mon:'25 min easy + 4×strides',Tue:'Strength 15 min',Wed:'20 min easy',Thu:'Rest',Sat:'30 min easy shake-out',note:'-65% volume'},
+    ]},
+  ]);
+  return _race({name:name||'Full Marathon Plan',type:'run-marathon',date,goal:'Sub-4:45',goalNote:'Target pace: ~6:45/km',startDate:sd,
+    splits:[{label:'Run',dist:'42.2 km',time:'4:45:00',pace:'6:45/km',cls:'run'}],
+    profile:{Level:'Beginner–Intermediate','Weekly runs':'4–5','Strength':'2×/week','Peak long run':'3:00'},
+    phases:[
+      {id:'base',name:'Base',dates:'Weeks 1–8',desc:'Easy aerobic miles. Strength foundation. Long run builds.',weeks:weeks.filter(w=>w.phase==='base'),note:'Comfortable 110 min long run at Z2'},
+      {id:'build',name:'Build',dates:'Weeks 9–14',desc:'Tempo runs. Long run extends to 2:40. Strength under load.',weeks:weeks.filter(w=>w.phase==='build'),note:'2:40 long run with race-pace sections'},
+      {id:'peak',name:'Peak',dates:'Weeks 15–18',desc:'Interval sessions. 3 hr long run. Peak mileage.',weeks:weeks.filter(w=>w.phase==='peak'),note:'Longest run is your confidence builder — not a fitness test'},
+      {id:'taper',name:'Taper',dates:'Weeks 19–20',desc:'Volume drops sharply. Intensity maintained. Legs load for race day.',weeks:weeks.filter(w=>w.phase==='taper'),note:'Taper tantrums are normal. Trust the process.'},
+    ],
+    gear:[{group:'Race Day',color:'var(--run)',items:['Race shoes (broken in — 100+ km on them)','Race number + belt','Cap or visor','GPS watch','5–7 gels (tested in training)','Electrolyte tabs','Anti-chafe cream','Vaseline (nipples, inner thighs)']}],
+    zones:[{z:'Z2',name:'Easy / Long Run',pct:'68–75%',rpe:'3–4',feel:'Full conversation',color:'var(--z2)'},{z:'Z3',name:'Tempo',pct:'76–82%',rpe:'5–6',feel:'Short sentences',color:'var(--z3)'},{z:'Z4',name:'Intervals',pct:'83–89%',rpe:'7–8',feel:'Race effort',color:'var(--z4)'}],
+    notes:'Coach note: The marathon is won or lost in the last 12 km. Never run the first half faster than planned. Strength training protects your hips and knees through 40+ km weeks — treat Tuesday as insurance on every other session.',
+  });
+}
+
+// ─── EXPORT FUNCTIONS ────────────────────────────────────────────
+function downloadFile(filename,content,mime){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type:mime}));
+  a.download=filename;a.click();URL.revokeObjectURL(a.href);
+}
+
+function exportPDF(){
+  window.print();
+}
+
+function exportCSV(raceId){
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  const rows=[['Week','Phase','Dates','Day','Session']];
+  getAllWeeks(r).forEach(w=>ALL_DAYS.forEach(d=>{
+    if(w.sessions[d])rows.push([w.weekNum,w.phase||'',w.dates||'',d,w.sessions[d]]);
+  }));
+  const csv=rows.map(row=>row.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  downloadFile(`${r.name} - Training Plan.csv`,csv,'text/csv;charset=utf-8;');
+}
+
+function exportICS(raceId){
+  const r=DATA.races.find(x=>x.id===raceId);if(!r)return;
+  const sd=r.startDate;
+  if(!sd){alert('This race does not have a stored start date. ICS export works with template-generated plans or plans created after this update.');return;}
+  const DAY_OFFSET={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6};
+  const pad=n=>String(n).padStart(2,'0');
+  const fmtDt=d=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+  const esc=s=>(s||'').replace(/[\\;,]/g,c=>'\\'+c).replace(/\n/g,'\\n');
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Training Hub//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  getAllWeeks(r).forEach(w=>{
+    ALL_DAYS.forEach(d=>{
+      const sess=w.sessions[d];if(!sess)return;
+      const base=new Date(sd);
+      base.setDate(base.getDate()+(w.weekNum-1)*7+(DAY_OFFSET[d]||0));
+      const uid=`${raceId}-w${w.weekNum}-${d}@traininghub`;
+      lines.push('BEGIN:VEVENT',`DTSTART;VALUE=DATE:${fmtDt(base)}`,`DTEND;VALUE=DATE:${fmtDt(base)}`,`SUMMARY:${esc(sess)}`,`DESCRIPTION:${esc(r.name+' · Week '+w.weekNum+(w.phase?' · '+w.phase:''))}`,`UID:${uid}`,'END:VEVENT');
+    });
+  });
+  // Add race day event
+  const raceDay=new Date(r.date);
+  lines.push('BEGIN:VEVENT',`DTSTART;VALUE=DATE:${fmtDt(raceDay)}`,`DTEND;VALUE=DATE:${fmtDt(raceDay)}`,`SUMMARY:🏁 RACE DAY — ${esc(r.name)}`,`DESCRIPTION:Goal: ${esc(r.goal)}`,`UID:raceday-${raceId}@traininghub`,'END:VEVENT');
+  lines.push('END:VCALENDAR');
+  downloadFile(`${r.name} - Training Calendar.ics`,lines.join('\r\n'),'text/calendar;charset=utf-8;');
+}
 
 // ─── INIT ────────────────────────────────────────────────────────
 showHub();
